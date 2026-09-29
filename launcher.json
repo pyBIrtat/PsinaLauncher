@@ -17,6 +17,27 @@
       "extra": []
     },
     {
+      "id": "bravovisual",
+      "name": "BravoVisuals",
+      "mc": "1.21.4",
+      "jar": "clients/1.21.4/bravovisual-1.21.4.jar",
+      "extra": []
+    },
+    {
+      "id": "delta14",
+      "name": "Delta",
+      "mc": "1.21.4",
+      "jar": "clients/1.21.4/delta14-1.21.4.jar",
+      "extra": []
+    },
+    {
+      "id": "srheldlc",
+      "name": "SrHeldlc",
+      "mc": "1.21.4",
+      "jar": "clients/1.21.4/srheldlc-1.21.4.jar",
+      "extra": []
+    },
+    {
       "id": "expa",
       "name": "Expensive",
       "mc": "1.21.4",
@@ -85,6 +106,27 @@
       "extra": []
     },
     {
+      "id": "delta11",
+      "name": "Delta",
+      "mc": "1.21.11",
+      "jar": "clients/1.21.11/delta11-1.21.11.jar",
+      "extra": []
+    },
+    {
+      "id": "godweer",
+      "name": "GodWeer",
+      "mc": "1.21.11",
+      "jar": "clients/1.21.11/godweer-1.21.11.jar",
+      "extra": []
+    },
+    {
+      "id": "richmodern",
+      "name": "Rich-Modern",
+      "mc": "1.21.11",
+      "jar": "clients/1.21.11/richmodern-1.21.11.jar",
+      "extra": []
+    },
+    {
       "id": "liquidbounce",
       "name": "LiquidBounce",
       "mc": "1.21.11",
@@ -122,6 +164,41 @@
       "name": "Arbuz",
       "mc": "26.2",
       "jar": "clients/26.2/arbuz26-26.2.jar",
+      "extra": []
+    },
+    {
+      "id": "blade",
+      "name": "Blade",
+      "mc": "26.2",
+      "jar": "clients/26.2/blade-26.2.jar",
+      "extra": []
+    },
+    {
+      "id": "divine",
+      "name": "Divine",
+      "mc": "26.2",
+      "jar": "clients/26.2/divine-26.2.jar",
+      "extra": []
+    },
+    {
+      "id": "evaware",
+      "name": "EvaWare",
+      "mc": "26.2",
+      "jar": "clients/26.2/evaware-26.2.jar",
+      "extra": []
+    },
+    {
+      "id": "godweer26",
+      "name": "GodWeer",
+      "mc": "26.2",
+      "jar": "clients/26.2/godweer26-26.2.jar",
+      "extra": []
+    },
+    {
+      "id": "xrose",
+      "name": "Xrose",
+      "mc": "26.2",
+      "jar": "clients/26.2/xrose-26.2.jar",
       "extra": []
     },
     {
