@@ -1,0 +1,21 @@
+# Client jars are NOT stored in git — they go to GitHub Releases (git blocks >100 MB,
+# Releases allow up to 2 GB per file with no traffic caps).
+clients/**/*.jar
+*.jar.part
+*.zip
+
+# local install artifacts / caches (if repo ever created inside an install)
+game/
+portable/
+runtime/
+libs/
+out/
+dist/
+logs/
+*.log
+settings.json
+launcher-theme.css
+shot-*.png
+
+# service dirs
+.git/

@@ -1,0 +1,20 @@
+{
+  "versions": ["1.21.4", "1.21.11", "26.2"],
+  "clients": [
+    {"id": "alek", "name": "Alek DLC", "mc": "1.21.4", "jar": "https://github.com/YOUR_NICK/clients-repo/releases/latest/download/alek-1.21.4.jar", "requires": ["viafabricplus"]},
+    {"id": "arbuz", "name": "Arbuz", "mc": "1.21.4", "jar": "https://github.com/YOUR_NICK/clients-repo/releases/latest/download/arbuz-1.21.4.jar"},
+    {"id": "expa", "name": "Expensive", "mc": "1.21.4", "jar": "https://github.com/YOUR_NICK/clients-repo/releases/latest/download/expa-1.21.4.jar", "requires": ["viafabricplus"]},
+    {"id": "liquidbounce14", "name": "LiquidBounce", "mc": "1.21.4", "jar": "https://github.com/YOUR_NICK/clients-repo/releases/latest/download/liquidbounce-1.21.4.jar", "extra": [{"name": "fabric-language-kotlin-1.14.1+kotlin.2.4.20.jar", "url": "https://github.com/YOUR_NICK/clients-repo/releases/latest/download/fabric-language-kotlin-1.14.1+kotlin.2.4.20.jar"}]},
+    {"id": "meow", "name": "Meow", "mc": "1.21.4", "jar": "", "portable": "meow"},
+    {"id": "rockstar14", "name": "Rockstar", "mc": "1.21.4", "jar": "https://github.com/YOUR_NICK/clients-repo/releases/latest/download/rockstar14-1.21.4.jar", "extra": [{"name": "rockstar-kotlin-stdlib.jar", "url": "https://github.com/YOUR_NICK/clients-repo/releases/latest/download/rockstar14-1.21.4-kotlin-stdlib.jar"}, {"name": "rockstar-okhttp.jar", "url": "https://github.com/YOUR_NICK/clients-repo/releases/latest/download/rockstar14-1.21.4-okhttp.jar"}, {"name": "rockstar-okio.jar", "url": "https://github.com/YOUR_NICK/clients-repo/releases/latest/download/rockstar14-1.21.4-okio.jar"}]},
+    {"id": "system", "name": "System DLC", "mc": "1.21.4", "jar": "https://github.com/YOUR_NICK/clients-repo/releases/latest/download/system-1.21.4.jar"},
+    {"id": "velka", "name": "Velka", "mc": "1.21.4", "jar": "https://github.com/YOUR_NICK/clients-repo/releases/latest/download/velka-1.21.4.jar"},
+    {"id": "durex", "name": "Durex", "mc": "1.21.11", "jar": "https://github.com/YOUR_NICK/clients-repo/releases/latest/download/durex.jar"},
+    {"id": "liquidbounce", "name": "LiquidBounce", "mc": "1.21.11", "jar": "https://github.com/YOUR_NICK/clients-repo/releases/latest/download/liquidbounce-1.21.11.jar", "extra": [{"name": "fabric-language-kotlin-1.14.1+kotlin.2.4.20.jar", "url": "https://github.com/YOUR_NICK/clients-repo/releases/latest/download/fabric-language-kotlin-1.14.1+kotlin.2.4.20.jar"}]},
+    {"id": "nursultan", "name": "Nursultan", "mc": "1.21.11", "jar": "", "portable": "nursultan"},
+    {"id": "rockstar", "name": "Rockstar SunShine", "mc": "1.21.11", "jar": "https://github.com/YOUR_NICK/clients-repo/releases/latest/download/rockstar-1.21.11.jar"},
+    {"id": "wexside", "name": "WexSide", "mc": "1.21.11", "jar": "https://github.com/YOUR_NICK/clients-repo/releases/latest/download/wexside-1.21.11.jar"},
+    {"id": "arbuz26", "name": "Arbuz", "mc": "26.2", "jar": "https://github.com/YOUR_NICK/clients-repo/releases/latest/download/arbuz26-26.2.jar"},
+    {"id": "liquidbounce26", "name": "LiquidBounce 26.2", "mc": "26.2", "jar": "https://github.com/YOUR_NICK/clients-repo/releases/latest/download/liquidbounce26.2.jar", "extra": [{"name": "fabric-language-kotlin-1.14.1+kotlin.2.4.20.jar", "url": "https://github.com/YOUR_NICK/clients-repo/releases/latest/download/fabric-language-kotlin-1.14.1+kotlin.2.4.20.jar"}]}
+  ]
+}

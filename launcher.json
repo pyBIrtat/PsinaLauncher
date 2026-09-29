@@ -1,0 +1,140 @@
+{
+  "versions": ["1.21.4", "1.21.11", "26.2"],
+  "clients": [
+    {
+      "id": "alek",
+      "name": "Alek DLC",
+      "mc": "1.21.4",
+      "jar": "clients/1.21.4/alek-1.21.4.jar",
+      "requires": ["viafabricplus"],
+      "extra": []
+    },
+    {
+      "id": "arbuz",
+      "name": "Arbuz",
+      "mc": "1.21.4",
+      "jar": "clients/1.21.4/arbuz-1.21.4.jar",
+      "extra": []
+    },
+    {
+      "id": "expa",
+      "name": "Expensive",
+      "mc": "1.21.4",
+      "jar": "clients/1.21.4/expa-1.21.4.jar",
+      "requires": ["viafabricplus"],
+      "extra": []
+    },
+    {
+      "id": "liquidbounce14",
+      "name": "LiquidBounce",
+      "mc": "1.21.4",
+      "jar": "clients/1.21.4/liquidbounce-1.21.4.jar",
+      "extra": [
+        {
+          "name": "fabric-language-kotlin-1.14.1+kotlin.2.4.20.jar",
+          "url": "clients/1.21.4/fabric-language-kotlin-1.14.1+kotlin.2.4.20.jar"
+        }
+      ]
+    },
+    {
+      "id": "meow",
+      "name": "Meow",
+      "mc": "1.21.4",
+      "jar": "",
+      "portable": "meow"
+    },
+    {
+      "id": "rockstar14",
+      "name": "Rockstar",
+      "mc": "1.21.4",
+      "jar": "clients/1.21.4/rockstar14-1.21.4.jar",
+      "extra": [
+        {
+          "name": "rockstar-kotlin-stdlib.jar",
+          "url": "clients/1.21.4/rockstar14-1.21.4-kotlin-stdlib.jar"
+        },
+        {
+          "name": "rockstar-okhttp.jar",
+          "url": "clients/1.21.4/rockstar14-1.21.4-okhttp.jar"
+        },
+        {
+          "name": "rockstar-okio.jar",
+          "url": "clients/1.21.4/rockstar14-1.21.4-okio.jar"
+        }
+      ]
+    },
+    {
+      "id": "system",
+      "name": "System DLC",
+      "mc": "1.21.4",
+      "jar": "clients/1.21.4/system-1.21.4.jar",
+      "extra": []
+    },
+    {
+      "id": "velka",
+      "name": "Velka",
+      "mc": "1.21.4",
+      "jar": "clients/1.21.4/velka-1.21.4.jar",
+      "extra": []
+    },
+    {
+      "id": "durex",
+      "name": "Durex",
+      "mc": "1.21.11",
+      "jar": "clients/1.21.11/durex.jar",
+      "extra": []
+    },
+    {
+      "id": "liquidbounce",
+      "name": "LiquidBounce",
+      "mc": "1.21.11",
+      "jar": "clients/1.21.11/liquidbounce-1.21.11.jar",
+      "extra": [
+        {
+          "name": "fabric-language-kotlin-1.14.1+kotlin.2.4.20.jar",
+          "url": "clients/1.21.11/fabric-language-kotlin-1.14.1+kotlin.2.4.20.jar"
+        }
+      ]
+    },
+    {
+      "id": "nursultan",
+      "name": "Nursultan",
+      "mc": "1.21.11",
+      "jar": "",
+      "portable": "nursultan"
+    },
+    {
+      "id": "rockstar",
+      "name": "Rockstar SunShine",
+      "mc": "1.21.11",
+      "jar": "clients/1.21.11/rockstar-1.21.11.jar",
+      "extra": []
+    },
+    {
+      "id": "wexside",
+      "name": "WexSide",
+      "mc": "1.21.11",
+      "jar": "clients/1.21.11/wexside-1.21.11.jar",
+      "extra": []
+    },
+    {
+      "id": "arbuz26",
+      "name": "Arbuz",
+      "mc": "26.2",
+      "jar": "clients/26.2/arbuz26-26.2.jar",
+      "extra": []
+    },
+    {
+      "id": "liquidbounce26",
+      "name": "LiquidBounce 26.2",
+      "mc": "26.2",
+      "jar": "clients/26.2/liquidbounce26.2.jar",
+      "extra": [
+        {
+          "name": "fabric-language-kotlin-1.14.1+kotlin.2.4.20.jar",
+          "url": "clients/26.2/fabric-language-kotlin-1.14.1+kotlin.2.4.20.jar"
+        }
+      ]
+    }
+  ]
+}
