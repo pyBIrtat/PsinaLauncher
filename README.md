@@ -1,3 +1,12 @@
+# Псина лаунчер
+
+<p align="center">
+  <a href="https://github.com/pyBIrtat/PsinaLauncher/releases/latest/download/psina-installer.bat"><b>⬇ СКАЧАТЬ ЛАУНЧЕР</b></a><br>
+  <sub>Один файл → запусти → лаунчер установится и появится ярлык на рабочем столе.</sub>
+</p>
+
+---
+
 # clients-repo — манифест и лого лаунчера «Псина»
 
 В git лежит только МЕЛОЧЬ (килобайты): манифесты + лого png.
