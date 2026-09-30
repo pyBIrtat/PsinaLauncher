@@ -93,14 +93,6 @@
       ]
     },
     {
-      "id": "system",
-      "name": "System DLC",
-      "mc": "1.21.4",
-      "jar": "clients/1.21.4/system-1.21.4-013e1ee7.jar",
-      "sha256": "013e1ee7623427a0a3df07fc955b50a7a76da1d09cb62081daa51a60d4f8f105",
-      "extra": []
-    },
-    {
       "id": "velka",
       "name": "Velka",
       "mc": "1.21.4",
