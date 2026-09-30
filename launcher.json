@@ -5,7 +5,8 @@
       "id": "alek",
       "name": "Alek DLC",
       "mc": "1.21.4",
-      "jar": "clients/1.21.4/alek-1.21.4.jar",
+      "jar": "clients/1.21.4/alek-1.21.4-b5615b89.jar",
+      "sha256": "b5615b8957b98ff144d51fdc1cdcb25d79aa42e63575ecd4b1fc91c5f8578d7a",
       "requires": ["viafabricplus"],
       "extra": []
     },
@@ -13,35 +14,40 @@
       "id": "arbuz",
       "name": "Arbuz",
       "mc": "1.21.4",
-      "jar": "clients/1.21.4/arbuz-1.21.4.jar",
+      "jar": "clients/1.21.4/arbuz-1.21.4-810929f4.jar",
+      "sha256": "810929f4f5bd944a837d2b464d6feeb269c63d920a9fc12219635c20bb91eab7",
       "extra": []
     },
     {
       "id": "bravovisual",
       "name": "BravoVisuals",
       "mc": "1.21.4",
-      "jar": "clients/1.21.4/bravovisual-1.21.4.jar",
+      "jar": "clients/1.21.4/bravovisual-1.21.4-bd754ce4.jar",
+      "sha256": "bd754ce4af53bfe622092cfba824e56d4d4d890487ef9323da8a007d1a044654",
       "extra": []
     },
     {
       "id": "delta14",
       "name": "Delta",
       "mc": "1.21.4",
-      "jar": "clients/1.21.4/delta14-1.21.4.jar",
+      "jar": "clients/1.21.4/delta14-1.21.4-71f9f0e4.jar",
+      "sha256": "71f9f0e444fb3901c5ed29d3a832a30f4e093ef8bbc8b7d8bf018ffc195ddf71",
       "extra": []
     },
     {
       "id": "srheldlc",
       "name": "SrHeldlc",
       "mc": "1.21.4",
-      "jar": "clients/1.21.4/srheldlc-1.21.4.jar",
+      "jar": "clients/1.21.4/srheldlc-1.21.4-d3569b81.jar",
+      "sha256": "d3569b8184b8771cc9c28f1ccd2941818584fe96d270b81d32c6bbdf623ca0f9",
       "extra": []
     },
     {
       "id": "expa",
       "name": "Expensive",
       "mc": "1.21.4",
-      "jar": "clients/1.21.4/expa-1.21.4.jar",
+      "jar": "clients/1.21.4/expa-1.21.4-f0228656.jar",
+      "sha256": "f02286568edf59854026164dfb224b8c9b27aef3bef32ed3fb7b1785551d5a7a",
       "requires": ["viafabricplus"],
       "extra": []
     },
@@ -49,7 +55,8 @@
       "id": "liquidbounce14",
       "name": "LiquidBounce",
       "mc": "1.21.4",
-      "jar": "clients/1.21.4/liquidbounce-1.21.4.jar",
+      "jar": "clients/1.21.4/liquidbounce-1.21.4-05ff2d03.jar",
+      "sha256": "05ff2d03f1de03d580c1174bb23bbe7a548078c9659eda35e0455cad4c943a93",
       "extra": [
         {
           "name": "fabric-language-kotlin-1.14.1+kotlin.2.4.20.jar",
@@ -68,7 +75,8 @@
       "id": "rockstar14",
       "name": "Rockstar",
       "mc": "1.21.4",
-      "jar": "clients/1.21.4/rockstar14-1.21.4.jar",
+      "jar": "clients/1.21.4/rockstar14-1.21.4-254c4702.jar",
+      "sha256": "254c470229d2b348d9d1300e6ddb3a9fdfaa38d8dc9279dc3f0b13f106525c28",
       "extra": [
         {
           "name": "rockstar-kotlin-stdlib.jar",
@@ -88,49 +96,56 @@
       "id": "system",
       "name": "System DLC",
       "mc": "1.21.4",
-      "jar": "clients/1.21.4/system-1.21.4.jar",
+      "jar": "clients/1.21.4/system-1.21.4-013e1ee7.jar",
+      "sha256": "013e1ee7623427a0a3df07fc955b50a7a76da1d09cb62081daa51a60d4f8f105",
       "extra": []
     },
     {
       "id": "velka",
       "name": "Velka",
       "mc": "1.21.4",
-      "jar": "clients/1.21.4/velka-1.21.4.jar",
+      "jar": "clients/1.21.4/velka-1.21.4-a6fade3d.jar",
+      "sha256": "a6fade3d0a577ed7a15ab49c315db04acf18e4bc3601ab561b311dc22ab7ff74",
       "extra": []
     },
     {
       "id": "durex",
       "name": "Durex",
       "mc": "1.21.11",
-      "jar": "clients/1.21.11/durex.jar",
+      "jar": "clients/1.21.11/durex-d81ceceb.jar",
+      "sha256": "d81cecebb82283ad02617613e7631f9ff68a492dcded1bfd12b9562b9d5b2b6c",
       "extra": []
     },
     {
       "id": "delta11",
       "name": "Delta",
       "mc": "1.21.11",
-      "jar": "clients/1.21.11/delta11-1.21.11.jar",
+      "jar": "clients/1.21.11/delta11-1.21.11-f47d7975.jar",
+      "sha256": "f47d79750370f7e6feda204c6d1c755261c4bde964f1e25eae930fb579b54157",
       "extra": []
     },
     {
       "id": "godweer",
       "name": "GodWeer",
       "mc": "1.21.11",
-      "jar": "clients/1.21.11/godweer-1.21.11.jar",
+      "jar": "clients/1.21.11/godweer-1.21.11-83248349.jar",
+      "sha256": "83248349acf3247f2634f8e03b6c4687e6c88ade81bab15d5c5fa04faff9500e",
       "extra": []
     },
     {
       "id": "richmodern",
       "name": "Rich-Modern",
       "mc": "1.21.11",
-      "jar": "clients/1.21.11/richmodern-1.21.11.jar",
+      "jar": "clients/1.21.11/richmodern-1.21.11-d83b147f.jar",
+      "sha256": "d83b147fbfde66c97231715bffbc3718e935885a7d6a150d1c87175562327221",
       "extra": []
     },
     {
       "id": "liquidbounce",
       "name": "LiquidBounce",
       "mc": "1.21.11",
-      "jar": "clients/1.21.11/liquidbounce-1.21.11.jar",
+      "jar": "clients/1.21.11/liquidbounce-1.21.11-6bbf432c.jar",
+      "sha256": "6bbf432cc5b829963b671c8b948e33e6cdb7a66d14f3a2f8507cad4f3f94f898",
       "extra": [
         {
           "name": "fabric-language-kotlin-1.14.1+kotlin.2.4.20.jar",
@@ -149,63 +164,72 @@
       "id": "rockstar",
       "name": "Rockstar SunShine",
       "mc": "1.21.11",
-      "jar": "clients/1.21.11/rockstar-1.21.11.jar",
+      "jar": "clients/1.21.11/rockstar-1.21.11-b8b7aa07.jar",
+      "sha256": "b8b7aa07e834f9123c5cd7dd785feb20d1ef222bf90d78c3fce1cce632397019",
       "extra": []
     },
     {
       "id": "wexside",
       "name": "WexSide",
       "mc": "1.21.11",
-      "jar": "clients/1.21.11/wexside-1.21.11.jar",
+      "jar": "clients/1.21.11/wexside-1.21.11-755ddf13.jar",
+      "sha256": "755ddf13c27f993fe8a3828a269fece2a3795865fe9d5bf4525caf5949c3ccf9",
       "extra": []
     },
     {
       "id": "arbuz26",
       "name": "Arbuz",
       "mc": "26.2",
-      "jar": "clients/26.2/arbuz26-26.2.jar",
+      "jar": "clients/26.2/arbuz26-26.2-17ba4959.jar",
+      "sha256": "17ba4959fea33fbec98227a30705e59bbb1870e708eb873e94c7cecdb63f887d",
       "extra": []
     },
     {
       "id": "blade",
       "name": "Blade",
       "mc": "26.2",
-      "jar": "clients/26.2/blade-26.2.jar",
+      "jar": "clients/26.2/blade-26.2-89b47ce8.jar",
+      "sha256": "89b47ce80254538d4a41a5d5c10fb912f95c2a97f2fd5be013ba0f5f6695527b",
       "extra": []
     },
     {
       "id": "divine",
       "name": "Divine",
       "mc": "26.2",
-      "jar": "clients/26.2/divine-26.2.jar",
+      "jar": "clients/26.2/divine-26.2-1e6c6d5b.jar",
+      "sha256": "1e6c6d5b5e4d17fdb42fee4161c3e3f0fb2286250af562558ea472368c408b45",
       "extra": []
     },
     {
       "id": "evaware",
       "name": "EvaWare",
       "mc": "26.2",
-      "jar": "clients/26.2/evaware-26.2.jar",
+      "jar": "clients/26.2/evaware-26.2-c68811c0.jar",
+      "sha256": "c68811c09eac77953f394ed50a8cdf543d0b72679a10073a18dcf319f52bb9f0",
       "extra": []
     },
     {
       "id": "godweer26",
       "name": "GodWeer",
       "mc": "26.2",
-      "jar": "clients/26.2/godweer26-26.2.jar",
+      "jar": "clients/26.2/godweer26-26.2-79483ea6.jar",
+      "sha256": "79483ea6cdfd35e4cdb5fbdcaf018c8e30c3e59e71d9d85f65b9eef5c665c068",
       "extra": []
     },
     {
       "id": "xrose",
       "name": "Xrose",
       "mc": "26.2",
-      "jar": "clients/26.2/xrose-26.2.jar",
+      "jar": "clients/26.2/xrose-26.2-7d019f40.jar",
+      "sha256": "7d019f409ec606c235de386396946965a46bcadfce1b399cfb32309cd2666dbe",
       "extra": []
     },
     {
       "id": "liquidbounce26",
       "name": "LiquidBounce 26.2",
       "mc": "26.2",
-      "jar": "clients/26.2/liquidbounce26.2.jar",
+      "jar": "clients/26.2/liquidbounce26.2-b2cd3a98.jar",
+      "sha256": "b2cd3a98dbfdf636f08da46b38ad77efd35d3a46e9ff428c7af7505395d8f182",
       "extra": [
         {
           "name": "fabric-language-kotlin-1.14.1+kotlin.2.4.20.jar",
