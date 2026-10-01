@@ -72,6 +72,13 @@
       "portable": "meow"
     },
     {
+      "id": "destra",
+      "name": "Destra Visuals",
+      "mc": "1.21.4",
+      "jar": "",
+      "portable": "destra"
+    },
+    {
       "id": "rockstar14",
       "name": "Rockstar",
       "mc": "1.21.4",
