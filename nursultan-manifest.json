@@ -6682,7 +6682,7 @@
     {"path": "natives/lwjgl_stb.dll", "sha256": "de03f38f8c7471b4924aa8bdf8724c181d1a7c20428dbce2ed301877e1d387e4", "size": 510464},
     {"path": "natives/lwjgl_tinyfd.dll", "sha256": "ec7d76e6ef7a99628ef6f8b6e544294b700108c341837779e6e2c01c0bc3da9c", "size": 251904},
     {"path": "natives/OpenAL.dll", "sha256": "0630aa42492f78126da1c4d99769632e03c55b2e63b050efe7e3005e07e3e6fc", "size": 1338368},
-    {"path": "NursultanClient.jar", "sha256": "4ec5d627c5352bc4366fc788b3a4bd95ec7e9413a8a14d2426e66948417c66f0", "size": 47067304},
+    {"path": "NursultanClient.jar", "sha256": "6a40f30033ad8262eeb6d66890ad6186c6cd9160d1bea82cafbdea2bb1e75d3e", "size": 47066738},
     {"path": "start.bat", "sha256": "36ee71525bfb817f50ac0d251563d8861e41139e4a266579d734e7ea3121f96b", "size": 677},
     {"path": "versions/NursultanClient-1.21.11/NursultanClient-1.21.11.json", "sha256": "52a56c9adebfa73968e9e40a2a87070511fd76126d58b95db324dae200efbded", "size": 1983}
   ]
