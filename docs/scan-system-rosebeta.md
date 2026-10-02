@@ -111,13 +111,92 @@ isDotNet    : false
 Отдельно: `subsystem: CONSOLE` при заявленном «GUI OneClick» — тоже нехарактерно для
 настоящего графического модуля.
 
-### 1.3 Вердикт по System Ready1.21.11.jar
+### 1.3 Глубокий разбор: что удалось вытащить из DLL
 
-**Не добавлять в лаунчер.** Формулировка честная: это не «нашли вирус», это
-«файл сконструирован так, чтобы его нельзя было проверить», и внутри — инъекция в процессы,
-захват экрана, чтение клавиатуры и сетевой доступ к произвольному URL. Для читового DLL
-такой набор — типовой профиль и инфостилера тоже, различить их статически невозможно.
-Раздавать это другим людям через лаунчер — брать на себя риск, который не проверяется.
+VMProtect-код не расшифровывается статически, но 27 МБ — это не только `.vmp0`.
+Прошёл по файлу своим `tools/pe-deep.ps1` (экспорты, поиск вложенных PE,
+магические сигнатуры, карта энтропии, полный дамп ASCII/UTF-16 строк).
+
+**Что нашлось:**
+
+1. **Экспортов нет вообще** — значит DLL не подгружается как обычная JNI-библиотека,
+   её грузят как образ/внедряют.
+2. **Внутри лежит второй PE** — валидный `MZ`+`PE\0\0` на смещении `0xBC93D0`:
+
+   | | |
+   |---|---|
+   | размер | 15 002 672 байт (до конца файла) |
+   | sha256 | `4232c3069ab6774586a9e5030b99999bfeb2b44902cee948897664b4a5fe940f` |
+   | секции | `.text .rdata .data .pdata .fptable .rsrc .reloc` — 7 штук |
+   | импорты | всего 2 DLL, 112 функций (WS2_32 + KERNEL32) |
+   | экспорты | **нет** |
+   | entry | `0x9064`, imageBase `0x180000000` |
+
+   Ключевые импорты вложенного PE: `LoadLibraryExW`, `GetProcAddress`,
+   `FreeLibraryAndExitThread`, `CreateFileMappingW`, `CreateThread`, `ExitProcess`,
+   `IsDebuggerPresent`. Это классический силуэт **мануал-мап инжектора**: нет
+   экспортов, самоуничтожение через `FreeLibraryAndExitThread`, загрузка API по имени.
+3. **6 GZIP- и 12 ZLIB-блобов** — внутри есть сжатые/зашифрованные данные.
+4. **Реальный бэкенд — `pulsevisuals.pro`**, целиком:
+
+   ```
+   https://pulsevisuals.pro
+   api.pulsevisuals.pro
+   ruapi.pulsevisuals.pro
+   euapi.pulsevisuals.pro
+   cosmetics.pulsevisuals.pro
+   cosmetics-eu.pulsevisuals.pro
+   ```
+5. **DLL на 99% состоит из JNI-моста к Minecraft**: в дампе 947 002 ASCII-строки,
+   и «интересных» из них 2380 — почти все это дескрипторы вида
+   `()Lnet/minecraft/class_1799;`, `net/minecraft/world/chunk/ChunkSection;`,
+   `net/minecraft/src/C_2139_` (Mojang-маппинги). То есть это настоящий нативный
+   клиент Minecraft, а не пустышка: OpenGL, `glfw3.dll`, `XAudio2_8/9.dll`, `bcrypt.dll`.
+6. **Внутрь вкомпилена библиотека инжекта BlackBone.** Строки-девайсы драйверов:
+
+   ```
+   \\.\BlackBone        \\.\CEDriver73
+   \\.\DBK32            \\.\DBK64
+   \\.\KProcessHacker2
+   ```
+
+   `DBK32`/`DBK64` — драйверы Cheat Engine, `KProcessHacker2` — драйвер Process Hacker,
+   `BlackBone` — известная библиотека инжекта в чужие процессы. И рядом — подписанные
+   человеком строки её логов: `CreateRemoteThread(map shell)`,
+   `VirtualAllocEx(image)`, `WriteProcessMemory(image)`, `SetThreadContext`.
+   **Вот и объяснение тех импортов**: инжектор свой, встроенный.
+7. **Работа с аккаунтами Xbox Live**: `net::live openSession`, `getSession`,
+   `fake_tokens`, `hide_password`, `/changepassword`.
+8. Прочие говорящие строки: `anti_analysis_test.exe`, `interposer_test.exe`,
+   `cheststealer`, `grabMouse`, API буфера обмена (`OpenClipboard`/`GetClipboardData`/
+   `SetClipboardData`/`EmptyClipboard`).
+9. **Чего НЕ нашлось** (а это главное для вердикта «стилер/не стилер»): ни одного
+   признака кражи браузерных данных — ни `Chrome`, ни `Firefox`, ни `Login Data`,
+   ни `leveldb`, ни `cookies.sqlite`, ни `wallet.dat`. Ни webhook'ов Discord,
+   ни telegram-бота.
+
+**Уточнённый вердикт:** это **не инфостилер по признакам** — это нативный читовый клиент
+с встроенным инжектором (BlackBone + драйверы CE/Process Hacker) и своим бэкендом
+`pulsevisuals.pro`. Инжекция объясняется задачей «залезть в игру», а не кражей.
+Но остаётся то, что нельзя закрыть: подпись отсутствует, код закрыт VMProtect,
+внутри второй PE без экспортов, и **сессии Xbox Live проходят через их API**
+(`net::live`, `fake_tokens`, `hide_password`) — это уже риск для аккаунта, а не для файлов.
+
+### 1.4 Вердикт по System Ready1.21.11.jar
+
+**По-прежнему не добавлять в лаунчер.** Точная формулировка: вирусных признаков
+(кража браузерных данных, webhook'и, telegram-бот) **не найдено**, но это не значит «безопасно»:
+
+- подпись отсутствует, код закрыт VMProtect — статически не читается;
+- внутри DLL вкомпилен инжектор BlackBone с драйверами Cheat Engine и Process Hacker
+  и второй PE без экспортов;
+- работа с сессиями Xbox Live (`net::live`, `fake_tokens`, `hide_password`);
+- весь трафик идёт на `pulsevisuals.pro` (api/ruapi/euapi/cosmetics) — чужая
+  инфраструктура, которую ты не контролируешь.
+
+Если отдавать это людям через лаунчер, ты раздаёшь им инжектор с драйверами и отправляешь
+их игровые сессии на сторонний сервис. Плюс жирный минус: антивирус на такое срабатывает,
+и у пользователей лаунчер начнёт «ловить» детекты.
 
 ---
 
