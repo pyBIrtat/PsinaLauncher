@@ -1,5 +1,9 @@
 {
-  "versions": ["1.21.4", "1.21.11", "26.2"],
+  "versions": [
+    "1.21.4",
+    "1.21.11",
+    "26.2"
+  ],
   "clients": [
     {
       "id": "alek",
@@ -7,7 +11,9 @@
       "mc": "1.21.4",
       "jar": "clients/1.21.4/alek-1.21.4-b5615b89.jar",
       "sha256": "b5615b8957b98ff144d51fdc1cdcb25d79aa42e63575ecd4b1fc91c5f8578d7a",
-      "requires": ["viafabricplus"],
+      "requires": [
+        "viafabricplus"
+      ],
       "extra": []
     },
     {
@@ -56,7 +62,9 @@
       "mc": "1.21.4",
       "jar": "clients/1.21.4/expa-1.21.4-f0228656.jar",
       "sha256": "f02286568edf59854026164dfb224b8c9b27aef3bef32ed3fb7b1785551d5a7a",
-      "requires": ["viafabricplus"],
+      "requires": [
+        "viafabricplus"
+      ],
       "extra": []
     },
     {
@@ -241,6 +249,23 @@
         {
           "name": "fabric-language-kotlin-1.14.1+kotlin.2.4.20.jar",
           "url": "clients/26.2/fabric-language-kotlin-1.14.1+kotlin.2.4.20.jar"
+        }
+      ]
+    },
+    {
+      "id": "dimasik",
+      "name": "Dimasik",
+      "mc": "26.2",
+      "jar": "clients/26.2/dimasik-26.2-5be2cba9.jar",
+      "sha256": "5be2cba99080430b4b81dc5a5aca4f0a916ef24bca7a7528ed066cc85fa79871",
+      "extra": [
+        {
+          "name": "dimasik-luaj.jar",
+          "url": "clients/26.2/dimasik-luaj.jar"
+        },
+        {
+          "name": "dimasik-onnxruntime.jar",
+          "url": "clients/26.2/dimasik-onnxruntime.jar"
         }
       ]
     }
