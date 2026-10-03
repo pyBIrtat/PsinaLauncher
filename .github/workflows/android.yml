@@ -1,0 +1,70 @@
+name: Build Psina Mobile APK
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "android/**"
+      - ".github/workflows/android.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.9"
+
+      - name: Тесты
+        working-directory: android
+        env:
+          PSINA_BUILD_NUMBER: ${{ github.run_number }}
+        run: gradle test --no-daemon --stacktrace
+
+      - name: Собрать APK
+        working-directory: android
+        env:
+          PSINA_BUILD_NUMBER: ${{ github.run_number }}
+          PSINA_KEYSTORE: keystore/psina.jks
+          PSINA_KEYSTORE_PASSWORD: psina-launcher-2026
+          PSINA_KEY_ALIAS: psina
+          PSINA_KEY_PASSWORD: psina-launcher-2026
+        run: gradle assembleRelease --no-daemon --stacktrace
+
+      - name: Подготовить артефакт
+        run: |
+          mkdir -p out
+          cp android/app/build/outputs/apk/release/app-release.apk \
+             "out/psina-mobile-${{ github.run_number }}.apk"
+          sha256sum out/*.apk
+
+      - name: Залить в релиз v1
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release view v1 --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1 \
+            || gh release create v1 --repo "$GITHUB_REPOSITORY" --title "Psina Launcher v1" --notes "Все ассеты лаунчера."
+          gh release upload v1 "out/psina-mobile-${{ github.run_number }}.apk" \
+            --repo "$GITHUB_REPOSITORY" --clobber
+
+      - name: Артефакт CI
+        uses: actions/upload-artifact@v4
+        with:
+          name: psina-mobile-apk
+          path: out/*.apk
+          retention-days: 30
