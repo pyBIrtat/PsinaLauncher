@@ -1,0 +1,83 @@
+package ru.psina.mobile.core
+
+import org.json.JSONArray
+import org.json.JSONObject
+
+/** Разбор манифеста launcher-online.json / launcher.json. */
+object ManifestRepo {
+
+    data class Extra(
+        val name: String,
+        val url: String,
+        val sha256: String?
+    )
+
+    data class Client(
+        val id: String,
+        val name: String,
+        val mc: String,
+        val jar: String,
+        val sha256: String?,
+        val requires: List<String> = emptyList(),
+        val extra: List<Extra> = emptyList(),
+        val portable: String? = null,
+        val zip: String? = null,
+        val logo: String = ""
+    ) {
+        val isPortable: Boolean get() = !portable.isNullOrBlank()
+    }
+
+    data class Manifest(
+        val versions: List<String>,
+        val clients: List<Client>
+    ) {
+        fun byVersion(): Map<String, List<Client>> =
+            versions.associateWith { v -> clients.filter { it.mc == v } }
+    }
+
+    fun parse(json: String): Manifest {
+        val root = JSONObject(json)
+        val versions = root.optJSONArray("versions")?.let { arr ->
+            (0 until arr.length()).map { arr.getString(it) }
+        } ?: emptyList()
+
+        val arr = root.optJSONArray("clients") ?: JSONArray()
+        val clients = (0 until arr.length()).mapNotNull { i ->
+            val o = arr.optJSONObject(i) ?: return@mapNotNull null
+            val id = o.optString("id")
+            if (id.isBlank()) return@mapNotNull null
+            val mc = o.optString("mc")
+            val extras = o.optJSONArray("extra")?.let { e ->
+                (0 until e.length()).mapNotNull { k ->
+                    val eo = e.optJSONObject(k) ?: return@mapNotNull null
+                    val n = eo.optString("name")
+                    val u = eo.optString("url")
+                    if (n.isBlank() || u.isBlank()) null
+                    else Extra(n, u, eo.optString("sha256").ifBlank { null })
+                }
+            } ?: emptyList()
+
+            val req = o.optJSONArray("requires")?.let { r ->
+                (0 until r.length()).map { r.getString(it) }
+            } ?: emptyList()
+
+            Client(
+                id = id,
+                name = o.optString("name", id),
+                mc = mc,
+                jar = o.optString("jar"),
+                sha256 = o.optString("sha256").ifBlank { null },
+                requires = req,
+                extra = extras,
+                portable = o.optString("portable").ifBlank { null },
+                zip = o.optString("zip").ifBlank { null },
+                // логотипы лежат как clients/<mc>/<id>.png, поэтому по умолчанию берём id
+                logo = o.optString("logo").ifBlank { id }
+            )
+        }
+
+        // Фолбэк: если версии не перечислены — собираем из клиентов по порядку.
+        val vers = versions.ifEmpty { clients.map { it.mc }.distinct() }
+        return Manifest(vers, clients)
+    }
+}

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Psina Mobile</string>
+    <string name="app_sub">лаунчер · Psina</string>
+
+    <string name="tab_clients">Клиенты</string>
+    <string name="tab_controls">Управление</string>
+    <string name="tab_servers">Сервера</string>
+    <string name="tab_mods">Моды</string>
+    <string name="tab_more">Ещё</string>
+
+    <string name="clients_title">Клиенты</string>
+    <string name="clients_sub">%1$d клиентов · %2$d версий</string>
+    <string name="search_hint">Поиск клиента…</string>
+    <string name="search_hint_mods">Поиск мода на Modrinth…</string>
+    <string name="all_versions">Все версии</string>
+
+    <string name="install">Установить</string>
+    <string name="reinstall">Переустановить</string>
+    <string name="installing">Установка…</string>
+    <string name="installed">Установлен</string>
+    <string name="not_installed">Не установлен</string>
+    <string name="verify">Проверить файлы</string>
+    <string name="remove">Удалить</string>
+    <string name="play">Играть</string>
+    <string name="export_instance">Экспорт инстанса</string>
+
+    <string name="portable">портативка</string>
+    <string name="needs_mods">нужны доп. моды</string>
+
+    <string name="controls_title">Управление</string>
+    <string name="controls_sub">кнопки, сенса, раскладки</string>
+    <string name="open_editor">Открыть редактор</string>
+    <string name="sensitivity">Сенса</string>
+    <string name="layout">Раскладка</string>
+    <string name="new_layout">Новая раскладка</string>
+    <string name="reset_layout">Сброс к стандарту</string>
+    <string name="export_layout">Экспорт раскладки (JSON)</string>
+    <string name="import_layout">Импорт раскладки</string>
+    <string name="add_button">Добавить кнопку</string>
+    <string name="bind_key">Привязать клавишу</string>
+    <string name="action">Действие</string>
+    <string name="size">Размер</string>
+    <string name="opacity">Прозрачность</string>
+    <string name="toggle_mode">Переключатель</string>
+    <string name="delete_button">Удалить кнопку</string>
+
+    <string name="servers_title">Сервера</string>
+    <string name="servers_sub">адреса и пинг</string>
+    <string name="add_server">Добавить сервер</string>
+    <string name="ping">Пинг</string>
+    <string name="copy_ip">Копировать адрес</string>
+    <string name="save">Сохранить</string>
+    <string name="cancel">Отмена</string>
+    <string name="close">Закрыть</string>
+    <string name="delete">Удалить</string>
+
+    <string name="mods_title">Моды</string>
+    <string name="mods_sub">Modrinth · для выбранной версии</string>
+    <string name="mods_offline">Офлайн — поиск недоступен</string>
+
+    <string name="more_title">Ещё</string>
+    <string name="more_sub">настройки и сайты</string>
+    <string name="settings">Настройки</string>
+    <string name="nickname">Ник</string>
+    <string name="ram">ОЗУ, ГБ</string>
+    <string name="java_args">Аргументы Java</string>
+    <string name="sites">Сайты</string>
+    <string name="about">О приложении</string>
+    <string name="engine">Движок запуска</string>
+    <string name="engine_found">Найден: %1$s</string>
+    <string name="engine_missing">Не найден на устройстве</string>
+    <string name="storage_used">Занято в приложении</string>
+</resources>
