@@ -9,7 +9,6 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
-import ru.psina.mobile.core.Prefs
 import ru.psina.mobile.core.Store
 import ru.psina.mobile.ui.ClientsScreen
 import ru.psina.mobile.ui.ControlsScreen
@@ -63,7 +62,7 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(root)
         buildTabs()
-        show(Prefs.clientId?.let { "clients" } ?: "clients")
+        show("clients")
     }
 
     private fun buildTabs() {

@@ -30,7 +30,10 @@ object InstanceExporter {
         zip.delete()
 
         val layoutId = Prefs.activeLayout
-        val layoutJson = Store.readLayout(layoutId) ?: LayoutExport.toPojav(CtrlLayout.default(Prefs.sensitivity))
+        // Наша раскладка читается как CtrlLayout; для движка отдаём её же в формате v8.
+        val layout = Store.readLayout(layoutId)?.let {
+            try { LayoutExport.fromAny(it) } catch (e: Exception) { CtrlLayout.default(Prefs.sensitivity) }
+        } ?: CtrlLayout.default(Prefs.sensitivity)
 
         ZipOutputStream(zip.outputStream().buffered()).use { zos ->
             // mods
@@ -43,8 +46,9 @@ object InstanceExporter {
             cfg.listFiles()?.filter { it.isFile }?.forEach { f ->
                 addFile(zos, "config/${f.name}", f)
             }
-            // раскладка кнопок — и в формате движка, и в нашем
-            addBytes(zos, "controlmap/$layoutId.json", layoutJson.toByteArray(Charsets.UTF_8))
+            // controlmap/<id>.json — формат движка (v8), его читают Zalith/Mojo/Pojav;
+            // controlmap/<id>.psina.json — наша раскладка (для повторного импорта в Psina).
+            addBytes(zos, "controlmap/$layoutId.json", LayoutExport.toPojav(layout).toByteArray(Charsets.UTF_8))
             Store.readLayout(layoutId)?.let {
                 addBytes(zos, "controlmap/$layoutId.psina.json", it.toByteArray(Charsets.UTF_8))
             }

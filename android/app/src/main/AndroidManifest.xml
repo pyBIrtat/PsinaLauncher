@@ -17,6 +17,7 @@
         <package android:name="net.kdt.pojavlaunch" />
         <package android:name="org.angelauramc.amethyst" />
         <package android:name="com.movtery.zalithlauncher" />
+        <package android:name="git.artdeell.mojo" />
         <package android:name="com.mojang.launcher" />
     </queries>
 

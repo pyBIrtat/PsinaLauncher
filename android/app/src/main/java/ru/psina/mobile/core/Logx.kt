@@ -38,11 +38,15 @@ object Logx {
         return f.readLines().takeLast(lines).joinToString("\n")
     }
 
+    // Лог пишут и UI-поток, и фоновые загрузки, поэтому пишем под замком:
+    // SimpleDateFormat не потокобезопасен.
+    @Synchronized
     private fun write(level: String, msg: String) {
         Log.println(if (level == "E") Log.ERROR else Log.INFO, TAG, msg)
         append("$level ${fmt.format(Date())} $msg")
     }
 
+    @Synchronized
     private fun append(line: String) {
         try {
             file?.appendText(line + "\n")

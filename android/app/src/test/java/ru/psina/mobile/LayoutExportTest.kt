@@ -71,7 +71,35 @@ class LayoutExportTest {
         assertEquals(1, l.buttons.size)
         assertEquals("W", l.buttons[0].label)
         assertEquals(87, l.buttons[0].keycodes[0])
+        // паддинг -1 не должен превратиться в лишние коды
+        assertEquals(1, l.buttons[0].keycodes.size)
         assertEquals(0.2f, l.buttons[0].fx, 0.001f)
         assertEquals(0.7f, l.buttons[0].fy, 0.001f)
+    }
+
+    @Test
+    fun pojav_keyboard_special_is_kept() {
+        // Спец-кнопка «Клавиатура» в Pojav — это keycodes [-1,-1,-1,-1],
+        // то же значение, что и паддинг. Не должны её потерять.
+        val pojav = """
+        {"version":8,"mControlDataList":[
+          {"name":"КЛАВ","keycodes":[-1,-1,-1,-1],"dynamicX":"0.06 * ${'$'}{screen_width}",
+           "dynamicY":"0.06 * ${'$'}{screen_height}","width":46,"height":46}],
+         "mJoystickDataList":[],"mDrawerDataList":[]}
+        """.trimIndent()
+        val l = LayoutExport.fromAny(pojav)
+        assertEquals(1, l.buttons.size)
+        assertTrue(l.buttons[0].special)
+        assertEquals(listOf(-1), l.buttons[0].keycodes)
+    }
+
+    @Test
+    fun own_format_roundtrip_keeps_keyboard() {
+        val l = CtrlLayout.default(1.35f)
+        val back = LayoutExport.fromAny(l.toJson())
+        val kb = l.buttons.first { it.keycodes == listOf(-1) }
+        val kb2 = back.buttons.first { it.keycodes == listOf(-1) }
+        assertEquals(kb.label, kb2.label)
+        assertTrue(kb2.special)
     }
 }

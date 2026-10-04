@@ -89,7 +89,11 @@ object LayoutExport {
             for (i in 0 until arr.length()) {
                 val b = arr.optJSONObject(i) ?: continue
                 val kc = b.optJSONArray("keycodes")?.let { a ->
-                    (0 until a.length()).map { a.getInt(it) }.filter { it != -1 }.toMutableList()
+                    val raw = (0 until a.length()).map { a.getInt(it) }
+                    // -1 — это и паддинг, и спец-кнопка «Клавиатура» (SPECIALBTN_KEYBOARD).
+                    // Если ВСЕ значения -1, значит это клавиатура; иначе -1 — только паддинг.
+                    if (raw.isNotEmpty() && raw.all { it == -1 }) mutableListOf(-1)
+                    else raw.filter { it != -1 }.toMutableList()
                 } ?: mutableListOf()
                 layout.buttons.add(
                     CtrlButton(

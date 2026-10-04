@@ -320,8 +320,6 @@ class ControlsActivity : AppCompatActivity() {
     private fun save() {
         layout.sensitivity = Prefs.sensitivity
         Store.writeLayout(Prefs.activeLayout, layout.toJson())
-        // сразу пишем и версию для движка — её забирает экспорт инстанса
-        Store.writeLayout(Prefs.activeLayout + ".pojav", LayoutExport.toPojav(layout))
         Logx.i("раскладка сохранена: ${Prefs.activeLayout}, кнопок ${layout.buttons.size}")
     }
 

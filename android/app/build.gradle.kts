@@ -59,9 +59,6 @@ android {
     buildFeatures {
         buildConfig = true
     }
-    buildFeatures {
-        buildConfig = true
-    }
     packaging {
         resources.excludes += setOf("META-INF/*.kotlin_module", "kotlin/**", "META-INF/DEPENDENCIES")
     }
