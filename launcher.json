@@ -85,14 +85,49 @@
       "name": "Meow",
       "mc": "1.21.4",
       "jar": "",
-      "portable": "meow"
+      "portable": "meow",
+      "android": {
+        "status": "experimental",
+        "notes": "Клиент — обычный Fabric-мод, работает и на телефоне. Windows-части (дискорд-RPC, медиаплеер, голосовой чат) не ставятся.",
+        "modsFromZip": [
+          "run/mods/meow-offline.jar",
+          "run/mods/fabric-api-0.119.4+1.21.4.jar",
+          "run/mods/sodium-fabric-0.6.13+mc1.21.4.jar",
+          "run/mods/sodium-extra-fabric-0.6.1+mc1.21.4.jar",
+          "run/mods/ImmediatelyFast-Fabric-1.8.7+1.21.4.jar",
+          "run/mods/entityculling-fabric-1.10.5-mc1.21.4.jar",
+          "run/mods/ferritecore-7.1.3-fabric.jar",
+          "run/mods/modernfix-fabric-5.20.3+mc1.21.4.jar",
+          "run/mods/ViaFabricPlus-4.0.5-BACKPORT.jar",
+          "run/mods/cloth-config-17.0.144-fabric.jar",
+          "run/mods/IAS-9.0.6+1.21.4-fabric.jar"
+        ],
+        "modsExclude": [
+          "voicechat-fabric",
+          "2k fps boost"
+        ],
+        "jvmArgs": [
+          "-Ddeluxe.username={nick}"
+        ]
+      }
     },
     {
       "id": "destra",
       "name": "Destra Visuals",
       "mc": "1.21.4",
       "jar": "",
-      "portable": "destra"
+      "portable": "destra",
+      "android": {
+        "status": "experimental",
+        "notes": "Клиент — обычный Fabric-мод. На телефон кладём ещё и compat-хелпер VMBridge (модом он не является, но без него клиент падает).",
+        "modsFromZip": [
+          "run/mods/destra-offline.jar",
+          "run/mods/fabric-api-0.111.0+1.21.4.jar"
+        ],
+        "libsFromZip": [
+          "runtime/compatibility/offline-compatibility.jar"
+        ]
+      }
     },
     {
       "id": "dimasik14",
@@ -180,7 +215,11 @@
       "name": "Nursultan",
       "mc": "1.21.11",
       "jar": "",
-      "portable": "nursultan"
+      "portable": "nursultan",
+      "android": {
+        "status": "pc",
+        "notes": "Своя точка входа Main со своим Fabric-бустстрапом и pinned-библиотеками — на телефоне не запускается."
+      }
     },
     {
       "id": "rockstar",
