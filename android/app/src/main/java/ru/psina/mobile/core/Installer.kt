@@ -1,11 +1,18 @@
 package ru.psina.mobile.core
 
 import java.io.File
+import java.util.zip.ZipFile
 
 /**
- * Установка клиента: jar + дополнительные моды в instance/mods,
- * плюс инфраструктурные моды (fabric-api, viafabricplus) с Modrinth,
- * если манифест помечает клиент как requires.
+ * Установка клиента на телефон.
+ *
+ * Три случая:
+ *  1) обычный Fabric-клиент — скачиваем jar (+extra) в mods;
+ *  2) портативка с блоком `android` — качаем её zip и вытаскиваем из него
+ *     ТОЛЬКО мод-файлы (modsFromZip) и мод-ссылки (mods), минус modsExclude;
+ *  3) всё остальное — блокируем на уровне UI (Только ПК).
+ *
+ * Плюс всегда: extra из манифеста, requires через Modrinth, fabric-api.
  */
 object Installer {
 
@@ -19,34 +26,45 @@ object Installer {
         val bytes: Long
     )
 
-    /**
-     * Ставит клиента. onProgress вызывается часто; возврат из корутины —
-     * через обычный callback, чтобы не тащить корутины в ядро.
-     */
     fun install(
         client: ManifestRepo.Client,
         onProgress: (Progress) -> Unit
     ): Result {
+        val spec = AndroidCompat.specOf(client)
         val mods = Paths.modsDir(client.mc)
         val installed = mutableListOf<File>()
         var total = 0L
 
-        // 1) основной jar клиента (если не портативка)
-        if (!client.isPortable) {
+        if (spec.status == Support.PC_ONLY) {
+            throw IllegalStateException(
+                "«${client.name}» помечен как «Только ПК»: " +
+                    (spec.notes.ifBlank { "на телефоне его рантайм не работает" })
+            )
+        }
+
+        // 1) основной клиент
+        if (spec.status == Support.EXPERIMENTAL && client.isPortable) {
+            total += installFromPortableZip(client, spec, mods, installed, onProgress)
+        } else {
             if (client.jar.isBlank()) throw IllegalStateException("в манифесте нет ссылки на jar для ${client.id}")
             onProgress(Progress("Скачиваем ${client.name}", 5))
-            val name = fileNameOf(client.jar)
-            val dst = File(mods, name)
+            val dst = File(mods, fileNameOf(client.jar))
             Net.download(client.jar, dst, client.sha256) { done, len ->
                 val pct = if (len > 0) (done * 60 / len).toInt() else 0
                 onProgress(Progress("Скачиваем ${client.name}", 5 + pct, "${done / 1048576} МБ"))
             }
             installed.add(dst); total += dst.length()
-        } else {
-            onProgress(Progress("Портативка ${client.name}", 10, "нужен движок с поддержкой портативок"))
         }
 
-        // 2) дополнительные моды клиента
+        // 1б) мод-файлы клиента, отданные прямыми ссылками (маленькие, без zip портативки)
+        spec.mods.forEachIndexed { i, m ->
+            onProgress(Progress("Мод клиента ${m.name}", 62 + i))
+            val dst = File(mods, m.name)
+            Net.download(m.url, dst, m.sha256)
+            installed.add(dst); total += dst.length()
+        }
+
+        // 2) дополнительные моды клиента из манифеста
         val extras = client.extra
         extras.forEachIndexed { i, e ->
             val base = 65 + (i * 20 / extras.size.coerceAtLeast(1))
@@ -82,8 +100,73 @@ object Installer {
         ensureFabricApi(client.mc, mods, installed)
 
         onProgress(Progress("Готово", 100))
-        Store.markInstalled(client.id, client.mc, if (client.isPortable) null else installed.firstOrNull()?.name)
+        Store.markInstalled(
+            client.id, client.mc,
+            if (client.isPortable) null else installed.firstOrNull()?.name,
+            spec.status
+        )
         return Result(client.id, client.mc, installed, total)
+    }
+
+    /**
+     * Портативка на телефон: качаем её zip и распаковываем только нужные моды.
+     * Сам Windows-рантайм (jre/natives/скрипты) не трогаем — игру запустит движок.
+     */
+    private fun installFromPortableZip(
+        client: ManifestRepo.Client,
+        spec: AndroidSpec,
+        mods: File,
+        out: MutableList<File>,
+        onProgress: (Progress) -> Unit
+    ): Long {
+        val zipUrl = client.zip
+            ?: throw IllegalStateException("у портативки ${client.id} нет zip-ссылки в манифесте")
+        val zip = File(Paths.downloads, "${client.id}.zip")
+
+        onProgress(Progress("Скачиваем пакет ${client.name}", 8, "нужен один раз"))
+        Net.download(zipUrl, zip, null) { done, len ->
+            val pct = if (len > 0) (done * 50 / len).toInt() else 0
+            onProgress(Progress("Скачиваем пакет ${client.name}", 8 + pct, "${done / 1048576} МБ"))
+        }
+
+        val wantedMods = spec.modsFromZip.map { it.replace('\\', '/') }.toSet()
+        val wantedLibs = spec.libsFromZip.map { it.replace('\\', '/') }.toSet()
+        val excluded = spec.modsExclude.map { it.replace('\\', '/') }.toSet()
+        val libs = File(Paths.instanceDir(client.mc), "libraries")
+        var total = 0L
+        var done = 0
+
+        onProgress(Progress("Распаковываем моды", 60))
+        ZipFile(zip).use { z ->
+            val entries = z.entries()
+            while (entries.hasMoreElements()) {
+                val e = entries.nextElement()
+                if (e.isDirectory) continue
+                val name = e.name.replace('\\', '/')
+                val isMod = name in wantedMods
+                val isLib = name in wantedLibs
+                if (!isMod && !isLib) continue
+                if (excluded.any { name.contains(it) }) {
+                    Logx.i("пропуск на телефоне: $name")
+                    continue
+                }
+                // compat-хелперы кладём в libraries/ — они не моды, но нужны в classpath
+                val dst = File(if (isLib) libs else mods, name.substringAfterLast('/'))
+                dst.parentFile?.mkdirs()
+                z.getInputStream(e).use { input -> dst.outputStream().use { input.copyTo(it) } }
+                if (isMod) out.add(dst)
+                total += dst.length()
+                done++
+                onProgress(Progress("Распаковываем моды", 60 + done * 5, dst.name))
+            }
+        }
+        if (done == 0) {
+            throw IllegalStateException(
+                "в пакете ${client.id} не нашлось файлов из modsFromZip — проверь блок android в манифесте"
+            )
+        }
+        Logx.i("портативка ${client.id}: распаковано $done файлов")
+        return total
     }
 
     /** fabric-api обязателен для любого Fabric-клиента — ставим, если его нет. */

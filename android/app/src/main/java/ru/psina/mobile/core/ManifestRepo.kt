@@ -22,9 +22,16 @@ object ManifestRepo {
         val extra: List<Extra> = emptyList(),
         val portable: String? = null,
         val zip: String? = null,
-        val logo: String = ""
+        val logo: String = "",
+        /** Опциональный блок `android` — как ставить этого клиента на телефон. */
+        val android: AndroidSpec? = null
     ) {
         val isPortable: Boolean get() = !portable.isNullOrBlank()
+
+        /** Что показываем в списке: уровень поддержки на телефоне. */
+        val support: Support get() = AndroidCompat.specOf(this).status
+
+        val playableOnPhone: Boolean get() = AndroidCompat.specOf(this).isPlayable
     }
 
     data class Manifest(
@@ -72,7 +79,8 @@ object ManifestRepo {
                 portable = o.optString("portable").ifBlank { null },
                 zip = o.optString("zip").ifBlank { null },
                 // логотипы лежат как clients/<mc>/<id>.png, поэтому по умолчанию берём id
-                logo = o.optString("logo").ifBlank { id }
+                logo = o.optString("logo").ifBlank { id },
+                android = parseAndroid(o.optJSONObject("android"))
             )
         }
 
@@ -80,4 +88,40 @@ object ManifestRepo {
         val vers = versions.ifEmpty { clients.map { it.mc }.distinct() }
         return Manifest(vers, clients)
     }
+
+    /**
+     * Блок `android` в клиенте. ПК-лаунчер его игнорирует, поэтому поле
+     * необязательное и полностью обратно совместимое.
+     */
+    private fun parseAndroid(o: JSONObject?): AndroidSpec? {
+        if (o == null) return null
+        val status = when (o.optString("status").lowercase()) {
+            "ok", "ready" -> Support.READY
+            "experimental" -> Support.EXPERIMENTAL
+            "pc", "pc_only" -> Support.PC_ONLY
+            else -> Support.EXPERIMENTAL
+        }
+        val mods = o.optJSONArray("mods")?.let { arr ->
+            (0 until arr.length()).mapNotNull { i ->
+                val eo = arr.optJSONObject(i) ?: return@mapNotNull null
+                val name = eo.optString("name")
+                val url = eo.optString("url")
+                if (name.isBlank() || url.isBlank()) null
+                else Extra(name, url, eo.optString("sha256").ifBlank { null })
+            }
+        } ?: emptyList()
+        return AndroidSpec(
+            status = status,
+            mods = mods,
+            modsFromZip = strList(o, "modsFromZip"),
+            libsFromZip = strList(o, "libsFromZip"),
+            modsExclude = strList(o, "modsExclude"),
+            jvmArgs = strList(o, "jvmArgs"),
+            mainClass = o.optString("mainClass").ifBlank { null },
+            notes = o.optString("notes")
+        )
+    }
+
+    private fun strList(o: JSONObject, key: String): List<String> =
+        o.optJSONArray(key)?.let { arr -> (0 until arr.length()).map { arr.getString(it) } } ?: emptyList()
 }

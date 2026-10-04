@@ -11,13 +11,16 @@ import android.widget.TextView
 import kotlin.concurrent.thread
 import ru.psina.mobile.LogoLoader
 import ru.psina.mobile.R
+import ru.psina.mobile.core.AndroidCompat
 import ru.psina.mobile.core.Engine
 import ru.psina.mobile.core.Installer
 import ru.psina.mobile.core.Logx
 import ru.psina.mobile.core.ManifestRepo
+import ru.psina.mobile.core.Paths
 import ru.psina.mobile.core.Prefs
 import ru.psina.mobile.core.Store
 import ru.psina.mobile.export.InstanceExporter
+import java.io.File
 
 /** Экран «Клиенты»: версии, список клиентов, установка и запуск. */
 class ClientsScreen(act: Activity) : Screen(act) {
@@ -31,6 +34,11 @@ class ClientsScreen(act: Activity) : Screen(act) {
     private var version: String? = null
     private var query: String = ""
     private var manifest: ManifestRepo.Manifest? = null
+
+    /** Показывать ли клиентов, которые на телефоне не поедут. */
+    private var showPcOnly = false
+
+    private lateinit var pcToggle: TextView
 
     override fun view(): View {
         root = Ui.column(act)
@@ -47,9 +55,17 @@ class ClientsScreen(act: Activity) : Screen(act) {
             }
         })
 
+        pcToggle = Ui.text(act, "", 12f, R.color.muted).apply {
+            setPadding(Ui.dp(act, 12f), Ui.dp(act, 8f), Ui.dp(act, 12f), Ui.dp(act, 8f))
+            background = act.getDrawable(R.drawable.bg_chip)
+            isClickable = true
+            setOnClickListener { showPcOnly = !showPcOnly; updatePcToggle(); render() }
+        }
+
         root.addView(status)
         root.addView(chips)
         root.addView(search)
+        root.addView(pcToggle)
         root.addView(list)
 
         val sc = Ui.scroll(act, root)
@@ -98,11 +114,18 @@ class ClientsScreen(act: Activity) : Screen(act) {
         }
     }
 
+    private fun updatePcToggle() {
+        val hidden = (manifest?.clients ?: emptyList()).count { !it.playableOnPhone }
+        pcToggle.text = if (showPcOnly) "Скрыть «Только ПК» ($hidden)" else "Показать «Только ПК» ($hidden)"
+    }
+
     private fun render() {
         val m = manifest ?: return
         list.removeAllViews()
+        updatePcToggle()
         val filtered = m.clients.filter { c ->
             (version == null || c.mc == version) &&
+                (showPcOnly || c.playableOnPhone) &&
                 (query.isBlank() || c.name.contains(query, true) || c.id.contains(query, true))
         }
         if (filtered.isEmpty()) {
@@ -145,7 +168,17 @@ class ClientsScreen(act: Activity) : Screen(act) {
         meta.layoutParams = mlp
         meta.addView(Ui.text(act, c.name, 15f).apply { setTypeface(typeface, Typeface.BOLD) })
         meta.addView(Ui.sub(act, "${c.mc} · ${c.id}"))
-        if (c.isPortable) meta.addView(Ui.sub(act, "портативка · ${c.portable}"))
+
+        val spec = AndroidCompat.specOf(c)
+        val tagColor = when (spec.status) {
+            ru.psina.mobile.core.Support.READY -> R.color.accent
+            ru.psina.mobile.core.Support.EXPERIMENTAL -> R.color.warn
+            ru.psina.mobile.core.Support.PC_ONLY -> R.color.muted
+        }
+        meta.addView(Ui.text(act, AndroidCompat.statusLabel(spec.status), 11f, tagColor))
+        if (spec.status == ru.psina.mobile.core.Support.PC_ONLY && spec.notes.isNotBlank()) {
+            meta.addView(Ui.sub(act, spec.notes))
+        }
         if (c.requires.isNotEmpty()) meta.addView(Ui.sub(act, "требует: ${c.requires.joinToString()}"))
         card.addView(meta)
 
@@ -155,20 +188,75 @@ class ClientsScreen(act: Activity) : Screen(act) {
         return card
     }
 
+    /** Что именно мешает клиенту на телефоне: разбор его jar'а. */
+    private fun showScan(c: ManifestRepo.Client) {
+        val dlg = android.app.Dialog(act, R.style.Theme_Psina_Dialog)
+        val box = Ui.column(act)
+        val result = Ui.sub(act, "Смотрю содержимое…")
+        box.addView(Ui.title(act, "Проверка ${c.name}"))
+        box.addView(result)
+        box.addView(Ui.button(act, act.getString(R.string.close)).apply {
+            setOnClickListener { dlg.dismiss() }
+        })
+        dlg.setContentView(Ui.scroll(act, box))
+        dlg.show()
+
+        thread {
+            val text = try {
+                val jar = File(Paths.modsDir(c.mc), Installer.fileNameOf(c.jar)).takeIf { it.exists() }
+                    ?: Paths.modsDir(c.mc).listFiles()?.firstOrNull { it.name.startsWith(c.id) }
+                if (jar == null) {
+                    "Сначала установи клиента — тогда посмотрю его jar."
+                } else {
+                    val r = AndroidCompat.scan(jar)
+                    buildString {
+                        append(jar.name).append('\n')
+                        append("классов: ").append(r.classes)
+                        append(", максимум ").append(r.javaLabel).append('\n')
+                        append("нативов: ").append(r.natives.size)
+                        append(", скриптов: ").append(r.scripts.size).append('\n')
+                        r.natives.take(6).forEach { append("  • ").append(it).append('\n') }
+                        append('\n')
+                        append(AndroidCompat.verdict(r))
+                        if (r.findings.isNotEmpty()) {
+                            append('\n')
+                            r.findings.forEach { f ->
+                                append("• ").append(f.why)
+                                append(" — ").append(f.count).append(" класс(ов)\n")
+                            }
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                Logx.e("разбор ${c.id} не удался", e)
+                "Не удалось разобрать: ${e.message}"
+            }
+            act.runOnUiThread { result.text = text }
+        }
+    }
+
     private fun openClient(c: ManifestRepo.Client) {
         val installed = Store.isInstalled(c.id)
+        val spec = AndroidCompat.specOf(c)
         val dlg = android.app.Dialog(act, R.style.Theme_Psina_Dialog)
         val sheet = Ui.column(act)
         sheet.addView(Ui.title(act, c.name))
         sheet.addView(Ui.sub(act, "версия ${c.mc}"))
         sheet.addView(Ui.sub(act, if (c.isPortable) "портативка" else "fabric-клиент"))
+        sheet.addView(Ui.sub(act, "телефон: ${AndroidCompat.statusLabel(spec.status)}"))
+        if (spec.notes.isNotBlank()) sheet.addView(Ui.sub(act, spec.notes))
         if (c.extra.isNotEmpty()) sheet.addView(Ui.sub(act, "доп. моды: " + c.extra.joinToString { it.name }))
         Store.installedInfo(c.id)?.let { info ->
             sheet.addView(Ui.sub(act, "файлов: ${info.files} · ${info.bytes / 1048576} МБ"))
         }
 
+        if (!spec.isPlayable) {
+            sheet.addView(Ui.sub(act, "Этот клиент работает только на ПК — нужен его Windows-рантайм."))
+        }
+
         if (!installed) {
             sheet.addView(Ui.button(act, act.getString(R.string.install), primary = true).apply {
+                enabled = spec.isPlayable
                 setOnClickListener { dlg.dismiss(); install(c) }
             })
         } else {
@@ -178,7 +266,11 @@ class ClientsScreen(act: Activity) : Screen(act) {
             sheet.addView(Ui.button(act, act.getString(R.string.export_instance)).apply {
                 setOnClickListener { dlg.dismiss(); exportInstance(c) }
             })
+            sheet.addView(Ui.button(act, "Проверить, пойдёт ли на телефоне").apply {
+                setOnClickListener { dlg.dismiss(); showScan(c) }
+            })
             sheet.addView(Ui.button(act, act.getString(R.string.reinstall)).apply {
+                enabled = spec.isPlayable
                 setOnClickListener { dlg.dismiss(); install(c) }
             })
             sheet.addView(Ui.button(act, act.getString(R.string.remove)).apply {
@@ -240,18 +332,27 @@ class ClientsScreen(act: Activity) : Screen(act) {
         if (engines.isEmpty()) {
             Ui.confirm(
                 act, "Движок не найден",
-                "На телефоне нет движка Java-Minecraft. Экспортировать инстанс архивом, " +
-                    "чтобы закинуть в движок вручную?"
+                "На телефоне нет движка Java-Minecraft (Zalith / Amethyst / Mojo). " +
+                    "Экспортировать инстанс архивом, чтобы закинуть его вручную?"
             ) { exportInstance(c) }
             return
         }
+        val spec = AndroidCompat.specOf(c)
         val names = engines.map { it.title }.toTypedArray()
         android.app.AlertDialog.Builder(act, R.style.Theme_Psina_Dialog)
             .setTitle("Запустить через")
             .setItems(names) { _, i ->
-                val dir = ru.psina.mobile.core.Paths.instanceDir(c.mc)
-                val ok = Engine.launch(act, engines[i], dir, c.mc, Prefs.nickname, Prefs.ramGb)
-                if (!ok) Ui.info(act, "Не удалось запустить", "Экспортируй инстанс архивом.")
+                val ok = Engine.launch(
+                    act, engines[i], c.mc, Prefs.nickname, Prefs.ramGb,
+                    extraJvmArgs = spec.jvmArgs, mainClass = spec.mainClass
+                )
+                if (!ok) {
+                    Ui.info(
+                        act, "Не удалось запустить",
+                        "Движок не принял запуск. Экспортируй инстанс архивом " +
+                            "и закинь моды вручную."
+                    )
+                }
             }
             .show()
     }

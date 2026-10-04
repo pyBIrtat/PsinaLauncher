@@ -6,13 +6,17 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import androidx.core.content.FileProvider
 import java.io.File
+import java.util.UUID
 
 /**
- * Работа с движком Java-Minecraft на Android.
+ * Мост к установленному на телефоне движку Java-Minecraft.
  *
- * Наше приложение готовит инстанс (mods, controlmap, конфиги) и передаёт
- * запуск установленному движку. Если движка нет — предлагаем экспорт
- * инстанса архивом, который можно закинуть в любой движок вручную.
+ * Мы готовим инстанс (mods, конфиги, раскладку) и отдаём движку строку
+ * JVM-аргументов. Главное здесь — classpath: движок про наши моды ничего
+ * не знает, поэтому каждый jar из `instances/<mc>/mods` идёт в `-cp`,
+ * а сам инстанс указывается как `--gameDir`.
+ *
+ * Если движка нет — предлагаем экспорт инстанса архивом.
  */
 object Engine {
 
@@ -22,76 +26,144 @@ object Engine {
         val launchActivity: String? = null
     )
 
+    /**
+     * Известные движки. Пакеты проверяются на устройстве: чего нет — просто
+     * не показываем. Запуск всё равно идёт через общий launch-intent пакета.
+     */
     val known = listOf(
         Known("com.movtery.zalithlauncher", "Zalith Launcher"),
         Known("org.angelauramc.amethyst", "Amethyst"),
         Known("net.kdt.pojavlaunch", "PojavLauncher"),
-        Known("com.mojang.launcher", "Minecraft (официальный)")
+        Known("git.artdeell.mojo", "Mojo Launcher")
     )
 
     /** Установленные движки на устройстве. */
     fun installed(ctx: Context): List<Known> {
         val pm = ctx.packageManager
         return known.filter { k ->
-            try { pm.getPackageInfo(k.pkg, 0); true } catch (e: PackageManager.NameNotFoundException) { false }
+            try { pm.getPackageInfo(k.pkg, 0); true }
+            catch (e: PackageManager.NameNotFoundException) { false }
         }
     }
 
     /**
-     * Пытается запустить движок. Возвращает true, если удалось отдать Intent.
-     * Движки на Android обычно ждут ARG-строку запуска; передаём её через
-     * extras + ACTION_VIEW на общий intent. Разные движки по-разному — поэтому
-     * пробуем несколько форм и, если не вышло, отдаём файл инстанса.
+     * Запускает движок с нашими аргументами. Возвращает true, если Intent ушёл.
+     * Движки читают строку запуска из разных extras, поэтому кладём сразу
+     * несколько ключей — лишние они игнорируют.
      */
-    fun launch(ctx: Context, engine: Known, instanceDir: File, mc: String, nickname: String, ramGb: Int): Boolean {
-        val args = buildArgs(instanceDir, mc, nickname, ramGb)
-        Logx.i("launch ${engine.pkg}: ${args.take(160)}")
+    fun launch(
+        ctx: Context,
+        engine: Known,
+        mc: String,
+        nickname: String,
+        ramGb: Int,
+        extraJvmArgs: List<String> = emptyList(),
+        mainClass: String? = null
+    ): Boolean {
+        val instance = Paths.instanceDir(mc)
+        val args = buildArgs(mc, nickname, ramGb, extraJvmArgs, mainClass)
+        Logx.i("запуск ${engine.pkg} для $mc: ${args.take(200)}")
 
-        // 1) явный запуск активности движка с extras
-        engine.launchActivity?.let { act ->
-            try {
-                val i = Intent(Intent.ACTION_MAIN).apply {
-                    setClassName(engine.pkg, act)
-                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    putExtra("javaArgs", args)
-                    putExtra("psina_args", args)
-                    putExtra("psina_instance", instanceDir.absolutePath)
-                }
-                ctx.startActivity(i)
-                return true
-            } catch (e: Exception) {
-                Logx.i("явный запуск не сработал: ${e.message}")
-            }
-        }
-
-        // 2) общий запуск по пакету
-        try {
-            val i = ctx.packageManager.getLaunchIntentForPackage(engine.pkg)
-            if (i != null) {
-                i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                i.putExtra("javaArgs", args)
-                i.putExtra("psina_args", args)
-                ctx.startActivity(i)
-                return true
-            }
+        val intent = try {
+            engine.launchActivity?.let { act ->
+                Intent(Intent.ACTION_MAIN).apply { setClassName(engine.pkg, act) }
+            } ?: ctx.packageManager.getLaunchIntentForPackage(engine.pkg)
         } catch (e: Exception) {
-            Logx.i("launch intent не сработал: ${e.message}")
+            Logx.i("явная активность ${engine.pkg} недоступна: ${e.message}")
+            null
         }
-        return false
+
+        val base = intent ?: try { ctx.packageManager.getLaunchIntentForPackage(engine.pkg) } catch (e: Exception) { null }
+        if (base == null) {
+            Logx.e("у ${engine.pkg} нет launch-intent", null)
+            return false
+        }
+
+        return try {
+            base.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            // строка аргументов — под самые ходовые ключи движков
+            base.putExtra("javaArgs", args)
+            base.putExtra("psina_args", args)
+            base.putExtra("jvmArgs", args)
+            base.putExtra("args", args)
+            // инстанс и ник — чтобы движок мог подхватить нашу папку
+            base.putExtra("psina_instance", instance.absolutePath)
+            base.putExtra("psina_nickname", nickname)
+            base.putExtra("psina_mc", mc)
+            ctx.startActivity(base)
+            true
+        } catch (e: Exception) {
+            Logx.e("не удалось запустить ${engine.pkg}", e)
+            false
+        }
     }
 
-    /** Строка аргументов запуска, которую понимает движок. */
-    fun buildArgs(instanceDir: File, mc: String, nickname: String, ramGb: Int): String {
+    /**
+     * Строка JVM-аргументов для движка.
+     *
+     * `-cp` собирается из модов инстанса — без него движок запустит чистую
+     * игру и клиента не увидит. `--gameDir` указывает на папку инстанса,
+     * `--username/--uuid` дают офлайн-профиль, чтобы клиент стартовал без
+     * входа в аккаунт.
+     */
+    fun buildArgs(
+        mc: String,
+        nickname: String,
+        ramGb: Int,
+        extraJvmArgs: List<String> = emptyList(),
+        mainClass: String? = null
+    ): String {
+        val instance = Paths.instanceDir(mc)
+        val ram = ramGb.coerceIn(1, 64)
         val sb = StringBuilder()
-        sb.append("-Xmx${ramGb}G -Xms${(ramGb / 2).coerceAtLeast(1)}G ")
-        sb.append("-Djava.library.path=${instanceDir.absolutePath}/natives ")
-        sb.append("-Dorg.lwjgl.librarypath=${instanceDir.absolutePath}/natives ")
-        sb.append("-Dfabric.gameJarPath=${instanceDir.absolutePath}/versions/$mc/$mc.jar ")
-        sb.append("--gameDir ${instanceDir.absolutePath} ")
-        sb.append("--username $nickname ")
-        sb.append("--version $mc ")
+
+        sb.append("-Xmx${ram}G -Xms${(ram / 2).coerceAtLeast(1)}G ")
+        sb.append("-Dpsina.mobile=1 ")
+        sb.append("-Dfile.encoding=UTF-8 ")
+        sb.append("-Djava.io.tmpdir=${File(Paths.cacheDir, "tmp").apply { mkdirs() }.absolutePath} ")
+
+        val cp = instanceClasspath(mc)
+        if (cp.isNotEmpty()) {
+            sb.append("-cp ").append(cp.joinToString(File.pathSeparator)).append(' ')
+        } else {
+            Logx.i("модов в инстансе нет — запускаем чистую игру")
+        }
+
+        extraJvmArgs.forEach { raw ->
+            val a = raw.replace("{nick}", nickname)
+            if (a.isNotBlank()) sb.append(a).append(' ')
+        }
+        if (!mainClass.isNullOrBlank()) sb.append("-Dpsina.mainClass=").append(mainClass).append(' ')
+
+        sb.append("--gameDir ").append(instance.absolutePath).append(' ')
+        sb.append("--username ").append(nickname).append(' ')
+        sb.append("--version ").append(mc).append(' ')
+        sb.append("--assetsDir ").append(File(instance, "assets").apply { mkdirs() }.absolutePath).append(' ')
+        sb.append("--assetIndex ").append(mc).append(' ')
+        sb.append("--uuid ").append(offlineUuid(nickname)).append(' ')
+        sb.append("--accessToken 0 --clientId 0 --xuid 0 ")
+        sb.append("--userType legacy --versionType release")
+
         return sb.toString().trim()
     }
+
+    /** Все jar'ы инстанса (mods + libraries), которые движок должен положить в classpath. */
+    fun instanceClasspath(mc: String): List<String> {
+        val out = mutableListOf<String>()
+        val roots = listOf(Paths.modsDir(mc), File(Paths.instanceDir(mc), "libraries"))
+        roots.forEach { dir ->
+            if (!dir.isDirectory) return@forEach
+            dir.walkTopDown()
+                .filter { it.isFile && it.name.endsWith(".jar", true) }
+                .sortedBy { it.name }
+                .forEach { out.add(it.absolutePath) }
+        }
+        return out
+    }
+
+    /** Офлайн-UUID — тот же алгоритм, что в ПК-лаунчере. */
+    fun offlineUuid(nickname: String): String =
+        UUID.nameUUIDFromBytes("OfflinePlayer:$nickname".toByteArray(Charsets.UTF_8)).toString()
 
     /** Отдаёт zip инстанса через «Поделиться» — закинуть в любой движок. */
     fun share(ctx: Context, zip: File, title: String) {

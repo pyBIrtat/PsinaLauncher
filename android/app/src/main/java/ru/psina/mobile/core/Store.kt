@@ -67,7 +67,9 @@ object Store {
         val jar: String?,
         val files: Int,
         val bytes: Long,
-        val at: Long
+        val at: Long,
+        /** Уровень поддержки, с которым клиент ставился (чтобы UI не гадал). */
+        val status: String = ""
     )
 
     private val installedFile get() = File(Paths.root, "installed.json")
@@ -82,7 +84,8 @@ object Store {
                 val id = o.getString("id")
                 out[id] = Installed(
                     id, o.optString("mc"), o.optString("jar").ifBlank { null },
-                    o.optInt("files"), o.optLong("bytes"), o.optLong("at")
+                    o.optInt("files"), o.optLong("bytes"), o.optLong("at"),
+                    o.optString("status")
                 )
             }
         } catch (e: Exception) {
@@ -97,6 +100,7 @@ object Store {
             arr.put(JSONObject().apply {
                 put("id", v.id); put("mc", v.mc); put("jar", v.jar ?: "")
                 put("files", v.files); put("bytes", v.bytes); put("at", v.at)
+                put("status", v.status)
             })
         }
         installedFile.writeText(arr.toString())
@@ -106,11 +110,11 @@ object Store {
 
     fun installedInfo(id: String): Installed? = readInstalled()[id]
 
-    fun markInstalled(id: String, mc: String, jar: String?) {
+    fun markInstalled(id: String, mc: String, jar: String?, status: Support = Support.READY) {
         val map = readInstalled()
         val dir = Paths.instanceDir(mc)
         val count = dir.walkTopDown().count { it.isFile }
-        map[id] = Installed(id, mc, jar, count, Paths.sizeOf(dir), System.currentTimeMillis())
+        map[id] = Installed(id, mc, jar, count, Paths.sizeOf(dir), System.currentTimeMillis(), status.name)
         writeInstalled(map)
     }
 
