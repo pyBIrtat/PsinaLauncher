@@ -256,7 +256,7 @@ class ClientsScreen(act: Activity) : Screen(act) {
 
         if (!installed) {
             sheet.addView(Ui.button(act, act.getString(R.string.install), primary = true).apply {
-                enabled = spec.isPlayable
+                isEnabled = spec.isPlayable
                 setOnClickListener { dlg.dismiss(); install(c) }
             })
         } else {
@@ -270,7 +270,7 @@ class ClientsScreen(act: Activity) : Screen(act) {
                 setOnClickListener { dlg.dismiss(); showScan(c) }
             })
             sheet.addView(Ui.button(act, act.getString(R.string.reinstall)).apply {
-                enabled = spec.isPlayable
+                isEnabled = spec.isPlayable
                 setOnClickListener { dlg.dismiss(); install(c) }
             })
             sheet.addView(Ui.button(act, act.getString(R.string.remove)).apply {
