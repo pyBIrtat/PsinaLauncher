@@ -262,7 +262,7 @@ class ControlsActivity : AppCompatActivity() {
 
         panel.addView(Ui.button(this, "Удалить кнопку").apply {
             setOnClickListener {
-                layout.buttons.remove(b)
+                this@ControlsActivity.layout.buttons.remove(b)
                 selected = null
                 panel.visibility = View.GONE
                 rebuild()
