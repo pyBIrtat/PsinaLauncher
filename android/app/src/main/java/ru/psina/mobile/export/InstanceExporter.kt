@@ -16,7 +16,7 @@ import java.util.zip.ZipOutputStream
  * Java-Minecraft на Android (или распаковать вручную).
  *
  * Внутри:
- *   mods/*.jar              — клиент и его моды
+ *   mods/ <клиент>.jar       — клиент и его моды
  *   controlmap/<layout>.json — раскладка кнопок (формат v8 + наша)
  *   psina-instance.json     — метаданные: ник, ОЗУ, версия, сенса
  *   КАК-ЗАПУСТИТЬ.txt       — короткая инструкция

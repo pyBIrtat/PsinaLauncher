@@ -44,16 +44,20 @@ object LogoLoader {
             for (u in mirrors) {
                 try {
                     val req = Request.Builder().url(u).header("User-Agent", Net.UA).build()
+                    var done = false
                     client.newCall(req).execute().use { r ->
                         if (r.isSuccessful) {
-                            val bytes = r.body?.bytes() ?: continue
-                            val bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.size) ?: continue
-                            f.writeBytes(bytes)
-                            mem[key] = bmp
-                            main.post { into.setImageBitmap(bmp) }
-                            return@Thread
+                            val bytes = r.body?.bytes()
+                            val bmp = bytes?.let { BitmapFactory.decodeByteArray(it, 0, it.size) }
+                            if (bytes != null && bmp != null) {
+                                f.writeBytes(bytes)
+                                mem[key] = bmp
+                                main.post { into.setImageBitmap(bmp) }
+                                done = true
+                            }
                         }
                     }
+                    if (done) return@Thread
                 } catch (e: Exception) {
                     Logx.i("логотип $key: ${e.message}")
                 }
