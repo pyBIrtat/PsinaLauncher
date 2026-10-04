@@ -14,7 +14,12 @@
       "requires": [
         "viafabricplus"
       ],
-      "extra": []
+      "extra": [],
+      "android": {
+        "status": "experimental",
+        "stripNatives": true,
+        "notes": "Внутри — Windows-нативы (Discord-RPC, медиаплеер). При установке вырезаем их; фичи с ними на телефоне отключатся, клиент стартует."
+      }
     },
     {
       "id": "arbuz",
@@ -22,7 +27,12 @@
       "mc": "1.21.4",
       "jar": "clients/1.21.4/arbuz-1.21.4-810929f4.jar",
       "sha256": "810929f4f5bd944a837d2b464d6feeb269c63d920a9fc12219635c20bb91eab7",
-      "extra": []
+      "extra": [],
+      "android": {
+        "status": "experimental",
+        "stripNatives": true,
+        "notes": "CatBoost-детект без Android-нативов: эта фича отвалится, остальное работает."
+      }
     },
     {
       "id": "bravovisual",
@@ -30,7 +40,12 @@
       "mc": "1.21.4",
       "jar": "clients/1.21.4/bravovisual-1.21.4-bd754ce4.jar",
       "sha256": "bd754ce4af53bfe622092cfba824e56d4d4d890487ef9323da8a007d1a044654",
-      "extra": []
+      "extra": [],
+      "android": {
+        "status": "experimental",
+        "stripNatives": true,
+        "notes": "Windows-нативы (Discord-RPC, медиаплеер) и AWT вырезаем при установке."
+      }
     },
     {
       "id": "debuda14",
@@ -38,7 +53,11 @@
       "mc": "1.21.4",
       "jar": "clients/1.21.4/debuda14-1.21.4-d05522ac.jar",
       "sha256": "d05522ac4c8d413a834d9b3f727f52efc58e0261937088f64678c5bb0672065e",
-      "extra": []
+      "extra": [],
+      "android": {
+        "status": "pc",
+        "notes": "Сборка неполная: нет классов MintFFIBatch/OfflineHandles и есть Windows-нативы. Не запускается и на ПК без донора."
+      }
     },
     {
       "id": "delta14",
@@ -46,7 +65,11 @@
       "mc": "1.21.4",
       "jar": "clients/1.21.4/delta14-1.21.4-71f9f0e4.jar",
       "sha256": "71f9f0e444fb3901c5ed29d3a832a30f4e093ef8bbc8b7d8bf018ffc195ddf71",
-      "extra": []
+      "extra": [],
+      "android": {
+        "status": "experimental",
+        "notes": "Runtime.exec только в необязательных местах — на телефоне должен стартовать."
+      }
     },
     {
       "id": "srheldlc",
@@ -54,7 +77,12 @@
       "mc": "1.21.4",
       "jar": "clients/1.21.4/srheldlc-1.21.4-d3569b81.jar",
       "sha256": "d3569b8184b8771cc9c28f1ccd2941818584fe96d270b81d32c6bbdf623ca0f9",
-      "extra": []
+      "extra": [],
+      "android": {
+        "status": "experimental",
+        "stripNatives": true,
+        "notes": "Встроенный desktop-onnxruntime и JNA: вырезаем, AI-детект на телефоне отключится."
+      }
     },
     {
       "id": "expa",
@@ -65,7 +93,12 @@
       "requires": [
         "viafabricplus"
       ],
-      "extra": []
+      "extra": [],
+      "android": {
+        "status": "experimental",
+        "stripNatives": true,
+        "notes": "Swing-окна и много Runtime.exec: часть фич не заведётся, ядро клиента стартует."
+      }
     },
     {
       "id": "liquidbounce14",
@@ -78,7 +111,11 @@
           "name": "fabric-language-kotlin-1.14.1+kotlin.2.4.20.jar",
           "url": "clients/1.21.4/fabric-language-kotlin-1.14.1+kotlin.2.4.20.jar"
         }
-      ]
+      ],
+      "android": {
+        "status": "experimental",
+        "notes": "Только AWT-ссылки, реальный интерфейс — у Minecraft. Должен работать."
+      }
     },
     {
       "id": "meow",
@@ -134,7 +171,11 @@
       "name": "Dimasik",
       "mc": "1.21.4",
       "jar": "",
-      "portable": "dimasik14"
+      "portable": "dimasik14",
+      "android": {
+        "status": "pc",
+        "notes": "Портативка с мёржед-jar (Main-Class Launch) и своим Windows-JRE — без него на телефоне не собрать."
+      }
     },
     {
       "id": "rockstar14",
@@ -155,7 +196,12 @@
           "name": "rockstar-okio.jar",
           "url": "clients/1.21.4/rockstar14-1.21.4-okio.jar"
         }
-      ]
+      ],
+      "android": {
+        "status": "experimental",
+        "stripNatives": true,
+        "notes": "MediaPlayerInfo.dll и Swing вырезаем при установке; медиа-фичи отключатся."
+      }
     },
     {
       "id": "velka",
@@ -163,7 +209,12 @@
       "mc": "1.21.4",
       "jar": "clients/1.21.4/velka-1.21.4-a6fade3d.jar",
       "sha256": "a6fade3d0a577ed7a15ab49c315db04acf18e4bc3601ab561b311dc22ab7ff74",
-      "extra": []
+      "extra": [],
+      "android": {
+        "status": "experimental",
+        "stripNatives": true,
+        "notes": "CatBoost/onnxruntime desktop вырезаем — AI-фичи отключатся, ядро клиента работает."
+      }
     },
     {
       "id": "durex",
@@ -171,7 +222,12 @@
       "mc": "1.21.11",
       "jar": "clients/1.21.11/durex-d81ceceb.jar",
       "sha256": "d81cecebb82283ad02617613e7631f9ff68a492dcded1bfd12b9562b9d5b2b6c",
-      "extra": []
+      "extra": [],
+      "android": {
+        "status": "experimental",
+        "stripNatives": true,
+        "notes": "Discord-RPC .dll вырезаем — RPC на телефоне нет, остальное работает."
+      }
     },
     {
       "id": "delta11",
@@ -179,7 +235,11 @@
       "mc": "1.21.11",
       "jar": "clients/1.21.11/delta11-1.21.11-80a10f26.jar",
       "sha256": "80a10f2615bb76de84d0b7f3f24a25273293f4f22af8fc7cc92124a0a5c91caa",
-      "extra": []
+      "extra": [],
+      "android": {
+        "status": "experimental",
+        "notes": "Runtime.exec только в необязательных местах — на телефоне должен стартовать."
+      }
     },
     {
       "id": "godweer",
@@ -187,7 +247,12 @@
       "mc": "1.21.11",
       "jar": "clients/1.21.11/godweer-1.21.11-83248349.jar",
       "sha256": "83248349acf3247f2634f8e03b6c4687e6c88ade81bab15d5c5fa04faff9500e",
-      "extra": []
+      "extra": [],
+      "android": {
+        "status": "experimental",
+        "stripNatives": true,
+        "notes": "JNA/Discord-RPC/медиаплеер вырезаем при установке."
+      }
     },
     {
       "id": "richmodern",
@@ -195,7 +260,11 @@
       "mc": "1.21.11",
       "jar": "clients/1.21.11/richmodern-1.21.11-d83b147f.jar",
       "sha256": "d83b147fbfde66c97231715bffbc3718e935885a7d6a150d1c87175562327221",
-      "extra": []
+      "extra": [],
+      "android": {
+        "status": "experimental",
+        "notes": "JNA и Runtime.exec (powershell/explorer) — эти фичи отключатся."
+      }
     },
     {
       "id": "liquidbounce",
@@ -208,7 +277,11 @@
           "name": "fabric-language-kotlin-1.14.1+kotlin.2.4.20.jar",
           "url": "clients/1.21.11/fabric-language-kotlin-1.14.1+kotlin.2.4.20.jar"
         }
-      ]
+      ],
+      "android": {
+        "status": "experimental",
+        "notes": "Только AWT-ссылки, реальный интерфейс — у Minecraft. Должен работать."
+      }
     },
     {
       "id": "nursultan",
@@ -227,7 +300,12 @@
       "mc": "1.21.11",
       "jar": "clients/1.21.11/rockstar-1.21.11-b8b7aa07.jar",
       "sha256": "b8b7aa07e834f9123c5cd7dd785feb20d1ef222bf90d78c3fce1cce632397019",
-      "extra": []
+      "extra": [],
+      "android": {
+        "status": "experimental",
+        "stripNatives": true,
+        "notes": "MediaPlayerInfo.dll и Swing вырезаем при установке; медиа-фичи отключатся."
+      }
     },
     {
       "id": "wexside",
@@ -235,7 +313,11 @@
       "mc": "1.21.11",
       "jar": "clients/1.21.11/wexside-1.21.11-755ddf13.jar",
       "sha256": "755ddf13c27f993fe8a3828a269fece2a3795865fe9d5bf4525caf5949c3ccf9",
-      "extra": []
+      "extra": [],
+      "android": {
+        "status": "experimental",
+        "notes": "Только Runtime.exec — на телефоне должен стартовать."
+      }
     },
     {
       "id": "arbuz26",
@@ -243,7 +325,12 @@
       "mc": "26.2",
       "jar": "clients/26.2/arbuz26-26.2-17ba4959.jar",
       "sha256": "17ba4959fea33fbec98227a30705e59bbb1870e708eb873e94c7cecdb63f887d",
-      "extra": []
+      "extra": [],
+      "android": {
+        "status": "experimental",
+        "stripNatives": true,
+        "notes": "Java 25 + CatBoost desktop. Нужен движок с Java 25; десктопные нативы вырезаем."
+      }
     },
     {
       "id": "blade",
@@ -251,7 +338,11 @@
       "mc": "26.2",
       "jar": "clients/26.2/blade-26.2-89b47ce8.jar",
       "sha256": "89b47ce80254538d4a41a5d5c10fb912f95c2a97f2fd5be013ba0f5f6695527b",
-      "extra": []
+      "extra": [],
+      "android": {
+        "status": "experimental",
+        "notes": "Java 25. Нужен движок с Java 25."
+      }
     },
     {
       "id": "divine",
@@ -259,7 +350,12 @@
       "mc": "26.2",
       "jar": "clients/26.2/divine-26.2-1e6c6d5b.jar",
       "sha256": "1e6c6d5b5e4d17fdb42fee4161c3e3f0fb2286250af562558ea472368c408b45",
-      "extra": []
+      "extra": [],
+      "android": {
+        "status": "experimental",
+        "stripNatives": true,
+        "notes": "Java 25 + discordrpc.dll вырезаем. Нужен движок с Java 25."
+      }
     },
     {
       "id": "evaware",
@@ -267,7 +363,12 @@
       "mc": "26.2",
       "jar": "clients/26.2/evaware-26.2-c68811c0.jar",
       "sha256": "c68811c09eac77953f394ed50a8cdf543d0b72679a10073a18dcf319f52bb9f0",
-      "extra": []
+      "extra": [],
+      "android": {
+        "status": "experimental",
+        "stripNatives": true,
+        "notes": "Java 25 + CatBoost/JNA: вырезаем десктопные нативы. Нужен движок с Java 25."
+      }
     },
     {
       "id": "godweer26",
@@ -275,7 +376,11 @@
       "mc": "26.2",
       "jar": "clients/26.2/godweer26-26.2-79483ea6.jar",
       "sha256": "79483ea6cdfd35e4cdb5fbdcaf018c8e30c3e59e71d9d85f65b9eef5c665c068",
-      "extra": []
+      "extra": [],
+      "android": {
+        "status": "experimental",
+        "notes": "Java 25. AWT-ссылки в меню. Нужен движок с Java 25."
+      }
     },
     {
       "id": "xrose",
@@ -283,7 +388,12 @@
       "mc": "26.2",
       "jar": "clients/26.2/xrose-26.2-7d019f40.jar",
       "sha256": "7d019f409ec606c235de386396946965a46bcadfce1b399cfb32309cd2666dbe",
-      "extra": []
+      "extra": [],
+      "android": {
+        "status": "experimental",
+        "stripNatives": true,
+        "notes": "Java 25 + discord-rpc.dll и Swing вырезаем. Нужен движок с Java 25."
+      }
     },
     {
       "id": "liquidbounce26",
@@ -296,7 +406,11 @@
           "name": "fabric-language-kotlin-1.14.1+kotlin.2.4.20.jar",
           "url": "clients/26.2/fabric-language-kotlin-1.14.1+kotlin.2.4.20.jar"
         }
-      ]
+      ],
+      "android": {
+        "status": "experimental",
+        "notes": "Java 25. Нужен движок с Java 25."
+      }
     },
     {
       "id": "dimasik",
@@ -313,7 +427,15 @@
           "name": "dimasik-onnxruntime.jar",
           "url": "clients/26.2/dimasik-onnxruntime.jar"
         }
-      ]
+      ],
+      "android": {
+        "status": "experimental",
+        "stripNatives": true,
+        "extraRemove": [
+          "onnxruntime"
+        ],
+        "notes": "Java 25. desktop-onnxruntime не ставим, Windows-медиаскрипты вырезаем. Нужен движок с Java 25."
+      }
     }
   ]
 }

@@ -1,5 +1,9 @@
 package ru.psina.mobile
 
+import java.io.File
+import java.util.zip.ZipEntry
+import java.util.zip.ZipFile
+import java.util.zip.ZipOutputStream
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
@@ -7,6 +11,7 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 import ru.psina.mobile.core.AndroidCompat
 import ru.psina.mobile.core.Engine
+import ru.psina.mobile.core.JarRewriter
 import ru.psina.mobile.core.ManifestRepo
 import ru.psina.mobile.core.Support
 
@@ -77,6 +82,73 @@ class AndroidCompatTest {
         val rock = m.clients.first { it.id == "rockstar" }
         assertEquals(Support.READY, rock.support)
         assertTrue(rock.playableOnPhone)
+    }
+
+    @Test
+    fun extra_remove_and_strip_natives_are_parsed() {
+        val json = """{"clients":[{"id":"dimasik","name":"Dimasik","mc":"26.2",
+            "jar":"https://x/d.jar",
+            "extra":[{"name":"dimasik-luaj.jar","url":"https://x/a.jar"},
+                      {"name":"dimasik-onnxruntime.jar","url":"https://x/b.jar"}],
+            "android":{"status":"experimental","extraRemove":["onnxruntime"],
+                        "stripNatives":true,"notes":"Java 25"}}]}"""
+        val c = ManifestRepo.parse(json).clients.single()
+        val spec = AndroidCompat.specOf(c)
+        assertEquals(Support.EXPERIMENTAL, spec.status)
+        assertEquals(listOf("onnxruntime"), spec.extraRemove)
+        assertTrue(spec.stripNatives)
+        assertEquals(2, c.extra.size)
+    }
+
+    @Test
+    fun jar_rewriter_flags_desktop_only_entries() {
+        assertTrue(JarRewriter.isDesktopOnly("win32-x86-64/discord-rpc.dll"))
+        assertTrue(JarRewriter.isDesktopOnly("mediaplayerinfo/natives/win/MediaPlayerInfo.dll"))
+        assertTrue(JarRewriter.isDesktopOnly("assets/dimasik/media/media_session.ps1"))
+        assertTrue(JarRewriter.isDesktopOnly("ai/onnxruntime/native/linux-x64/libonnxruntime.so"))
+        assertTrue(JarRewriter.isDesktopOnly("libs/foo/bundle.exe"))
+        // обычные файлы мода трогать нельзя
+        assertFalse(JarRewriter.isDesktopOnly("ru/psina/Client.class"))
+        assertFalse(JarRewriter.isDesktopOnly("fabric.mod.json"))
+        assertFalse(JarRewriter.isDesktopOnly("assets/icon.png"))
+        // android-нативу не вырезаем
+        assertFalse(JarRewriter.isDesktopOnly("lib/arm64-v8a/libonnxruntime.so"))
+    }
+
+    @Test
+    fun jar_rewriter_strips_natives_in_place_and_keeps_rest() {
+        val dir = File(System.getProperty("java.io.tmpdir"), "psina-test-${System.nanoTime()}")
+        dir.mkdirs()
+        val jar = File(dir, "client.jar")
+        ZipOutputStream(jar.outputStream()).use { z ->
+            fun put(name: String, body: String) {
+                z.putNextEntry(ZipEntry(name))
+                z.write(body.toByteArray())
+                z.closeEntry()
+            }
+            put("ru/psina/Client.class", "CLASS")
+            put("fabric.mod.json", "{}")
+            put("win32-x86-64/discord-rpc.dll", "DLL")
+            put("media_session.ps1", "PS")
+            put("ai/onnxruntime/native/win-x64/onnxruntime.dll", "ONNX")
+            put("META-INF/MANIFEST.SF", "sig")
+        }
+
+        val removed = JarRewriter.stripNatives(jar)
+        assertEquals(4, removed)
+
+        val names = mutableListOf<String>()
+        ZipFile(jar).use { z ->
+            val e = z.entries()
+            while (e.hasMoreElements()) names.add(e.nextElement().name)
+        }
+        assertTrue(names.contains("ru/psina/Client.class"))
+        assertTrue(names.contains("fabric.mod.json"))
+        assertFalse(names.any { it.endsWith(".dll") })
+        assertFalse(names.any { it.endsWith(".ps1") })
+        assertFalse(names.any { it.endsWith(".SF") })
+        jar.delete()
+        dir.delete()
     }
 
     @Test

@@ -53,6 +53,7 @@ object Installer {
                 val pct = if (len > 0) (done * 60 / len).toInt() else 0
                 onProgress(Progress("Скачиваем ${client.name}", 5 + pct, "${done / 1048576} МБ"))
             }
+            stripIfNeeded(spec, dst)
             installed.add(dst); total += dst.length()
         }
 
@@ -61,11 +62,17 @@ object Installer {
             onProgress(Progress("Мод клиента ${m.name}", 62 + i))
             val dst = File(mods, m.name)
             Net.download(m.url, dst, m.sha256)
+            stripIfNeeded(spec, dst)
             installed.add(dst); total += dst.length()
         }
 
-        // 2) дополнительные моды клиента из манифеста
-        val extras = client.extra
+        // 2) дополнительные моды клиента из манифеста (минус то, что просил выкинуть блок android)
+        val extras = client.extra.filterNot { e ->
+            spec.extraRemove.any { token -> e.name.contains(token, ignoreCase = true) }
+        }
+        client.extra.filterNot { it in extras }.forEach {
+            Logx.i("пропуск на телефоне: extra ${it.name}")
+        }
         extras.forEachIndexed { i, e ->
             val base = 65 + (i * 20 / extras.size.coerceAtLeast(1))
             onProgress(Progress("Доп. мод ${e.name}", base))
@@ -74,6 +81,7 @@ object Installer {
                 val pct = if (len > 0) (done * 18 / len).toInt() else 0
                 onProgress(Progress("Доп. мод ${e.name}", base + pct))
             }
+            stripIfNeeded(spec, dst)
             installed.add(dst); total += dst.length()
         }
 
@@ -154,6 +162,7 @@ object Installer {
                 val dst = File(if (isLib) libs else mods, name.substringAfterLast('/'))
                 dst.parentFile?.mkdirs()
                 z.getInputStream(e).use { input -> dst.outputStream().use { input.copyTo(it) } }
+                stripIfNeeded(spec, dst)
                 if (isMod) out.add(dst)
                 total += dst.length()
                 done++
@@ -167,6 +176,17 @@ object Installer {
         }
         Logx.i("портативка ${client.id}: распаковано $done файлов")
         return total
+    }
+
+    /** Вырезаем Windows-нативы и подписи, если блок android так просит. */
+    private fun stripIfNeeded(spec: AndroidSpec, jar: File) {
+        if (!spec.stripNatives) return
+        try {
+            val n = JarRewriter.stripNatives(jar)
+            if (n > 0) Logx.i("${jar.name}: вырезано десктопных файлов — $n")
+        } catch (e: Exception) {
+            Logx.e("не удалось почистить ${jar.name}", e)
+        }
     }
 
     /** fabric-api обязателен для любого Fabric-клиента — ставим, если его нет. */

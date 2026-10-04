@@ -113,9 +113,11 @@ object ManifestRepo {
         return AndroidSpec(
             status = status,
             mods = mods,
+            extraRemove = strList(o, "extraRemove"),
             modsFromZip = strList(o, "modsFromZip"),
             libsFromZip = strList(o, "libsFromZip"),
             modsExclude = strList(o, "modsExclude"),
+            stripNatives = o.optBoolean("stripNatives", false),
             jvmArgs = strList(o, "jvmArgs"),
             mainClass = o.optString("mainClass").ifBlank { null },
             notes = o.optString("notes")

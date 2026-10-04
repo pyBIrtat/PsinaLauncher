@@ -82,6 +82,8 @@ Fabric-мод**, поэтому на телефоне он запускаетс�
   "modsFromZip": ["run/mods/meow-offline.jar", "run/mods/sodium-...jar"],
   "libsFromZip": ["runtime/compatibility/offline-compatibility.jar"],
   "modsExclude": ["voicechat-fabric"],
+  "extraRemove": ["onnxruntime"],
+  "stripNatives": true,
   "jvmArgs": ["-Ddeluxe.username={nick}"],
   "mainClass": null
 }
@@ -93,8 +95,23 @@ Fabric-мод**, поэтому на телефоне он запускаетс�
 | `modsFromZip` | какие файлы вытащить из zip портативки в `mods/` |
 | `libsFromZip` | что положить в classpath, но не в `mods/` (compat-хелперы вроде VMBridge) |
 | `modsExclude` | что на телефоне не нужно (Windows-нативы, голосовой чат) |
+| `extraRemove` | какие `extra` из манифеста не ставить (подстрокой: `dimasik-onnxruntime.jar`) |
+| `stripNatives` | вырезать из jar встроенные `.dll/.exe/.ps1/.bat` и десктопные `.so` |
 | `jvmArgs` | доп. аргументы; `{nick}` подставляется ником |
 | `mainClass` | свой главный класс вместо KnotClient |
+
+### Почему `stripNatives` работает
+
+Внутри jar'ов ПК-клиентов лежат Windows-библиотеки (`discord-rpc.dll`,
+`MediaPlayerInfo.dll`, `onnxruntime.dll`, `catboost*.dll`) и вспомогательные
+`.ps1`-скрипты. Мод грузит их **лениво**, только когда вызывается конкретная
+фича, поэтому на телефоне достаточно вырезать сами файлы: фича отвалится с
+ошибкой в логе, а клиент стартует. `stripNatives` переписывает скачанный jar
+на месте (заодно снимая подписи `META-INF/*.SF`), удаляя:
+
+- `.dll`, `.exe`, `.ps1`, `.bat`, `.cmd`, `.dylib`, `.jnilib`;
+- `.so`/`.dylib` из десктопных папок (`linux-*`, `osx-*`, `win*`, `x86*`),
+  при этом Android-нативы (`lib/arm64-v8a/...`) остаются.
 
 Если блока нет: портативка считается «Только ПК», обычный Fabric-клиент —
 готовым к телефону.

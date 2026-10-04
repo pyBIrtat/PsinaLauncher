@@ -26,6 +26,11 @@ data class AndroidSpec(
     val status: Support,
     /** Прямые ссылки на мод-файлы клиента (маленькие; вместо целого zip портативки). */
     val mods: List<ManifestRepo.Extra> = emptyList(),
+    /**
+     * Какие `extra` из манифеста НЕ ставить на телефон (по имени файла,
+     * подстрокой). Например desktop-onnxruntime у Dimasik 26.2 или Windows-нативы.
+     */
+    val extraRemove: List<String> = emptyList(),
     /** Если прямых ссылок нет — вытащить эти пути из zip портативки. */
     val modsFromZip: List<String> = emptyList(),
     /**
@@ -35,6 +40,13 @@ data class AndroidSpec(
     val libsFromZip: List<String> = emptyList(),
     /** Что из набора портативки выкинуть на телефоне (Windows-нативы, голосовой чат и т.п.). */
     val modsExclude: List<String> = emptyList(),
+    /**
+     * Вырезать из скачанного jar встроенные Windows-нативы (.dll/.exe),
+     * Windows-скрипты и десктопные .so/.dylib. Мод тянет их только при
+     * вызове фичи (дискорд-RPC, медиаплеер, onnx/catboost) — на телефоне
+     * такие фичи отключаются, а сам клиент продолжает работать.
+     */
+    val stripNatives: Boolean = false,
     /** Доп. JVM-аргументы; {nick} подставляется ником из настроек. */
     val jvmArgs: List<String> = emptyList(),
     /** Свой главный класс вместо KnotClient (нужен редким сборкам). */
