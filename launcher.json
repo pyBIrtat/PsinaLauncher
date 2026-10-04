@@ -95,6 +95,13 @@
       "portable": "destra"
     },
     {
+      "id": "dimasik14",
+      "name": "Dimasik",
+      "mc": "1.21.4",
+      "jar": "",
+      "portable": "dimasik14"
+    },
+    {
       "id": "rockstar14",
       "name": "Rockstar",
       "mc": "1.21.4",
