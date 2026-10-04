@@ -1,17 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="bg">#0B0D0B</color>
-    <color name="bg2">#0F130F</color>
-    <color name="card">#131913</color>
-    <color name="card2">#182018</color>
-    <color name="line">#22301F</color>
-    <color name="line2">#2E4029</color>
-    <color name="text">#E7F0E3</color>
-    <color name="muted">#8BA382</color>
+    <!-- Design v2: изумрудная палитра из макета -->
+    <color name="bg">#050806</color>
+    <color name="bg2">#09100C</color>
+    <color name="bg3">#0D1611</color>
+    <color name="card">#111C16</color>
+    <color name="card2">#16241C</color>
+    <color name="card3">#1D2E24</color>
+    <color name="line">#16241C</color>
+    <color name="line2">#24382C</color>
+
+    <color name="text">#EAF4EE</color>
+    <color name="muted">#8EA398</color>
+    <color name="dim">#5B6F64</color>
+
     <color name="accent">#22C55E</color>
-    <color name="accent_dark">#16A34A</color>
-    <color name="accent_soft">#1F2E20</color>
-    <color name="danger">#EF4444</color>
-    <color name="warn">#F59E0B</color>
-    <color name="ink">#05140A</color>
+    <color name="accent_light">#4ADE80</color>
+    <color name="accent_dark">#15803D</color>
+    <color name="accent_soft">#14281C</color>
+    <color name="ink">#052E16</color>
+
+    <color name="danger">#FF6B6B</color>
+    <color name="warn">#F5A524</color>
+    <color name="portable">#B9A7FF</color>
 </resources>

@@ -4,16 +4,16 @@
         <item name="colorPrimary">@color/accent</item>
         <item name="colorOnPrimary">@color/ink</item>
         <item name="colorPrimaryContainer">@color/accent_soft</item>
-        <item name="colorOnPrimaryContainer">@color/accent</item>
+        <item name="colorOnPrimaryContainer">@color/accent_light</item>
         <item name="colorSecondary">@color/accent</item>
         <item name="colorSurface">@color/card</item>
         <item name="colorOnSurface">@color/text</item>
         <item name="colorSurfaceVariant">@color/card2</item>
         <item name="colorOnSurfaceVariant">@color/muted</item>
         <item name="colorOutline">@color/line2</item>
-        <item name="android:colorBackground">@color/bg</item>
-        <item name="android:statusBarColor">@color/bg</item>
-        <item name="android:navigationBarColor">@color/bg2</item>
+        <item name="android:colorBackground">@color/bg2</item>
+        <item name="android:statusBarColor">@color/bg2</item>
+        <item name="android:navigationBarColor">@color/bg</item>
         <item name="android:windowLightStatusBar">false</item>
         <item name="android:textColorPrimary">@color/text</item>
         <item name="android:textColorSecondary">@color/muted</item>
@@ -37,6 +37,19 @@
 
     <style name="PsinaDialogButton" parent="Widget.Material3.Button.TextButton.Dialog">
         <item name="android:textColor">@color/accent</item>
+    </style>
+
+    <style name="PsinaButton" parent="Widget.Material3.Button">
+        <item name="backgroundTint">@color/accent</item>
+        <item name="android:textColor">@color/ink</item>
+        <item name="android:textStyle">bold</item>
+        <item name="cornerRadius">16dp</item>
+    </style>
+
+    <style name="PsinaButtonOutlined" parent="Widget.Material3.Button.OutlinedButton">
+        <item name="strokeColor">@color/accent_light</item>
+        <item name="android:textColor">@color/accent_light</item>
+        <item name="cornerRadius">16dp</item>
     </style>
 
     <style name="PsinaCard">
