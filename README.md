@@ -1,8 +1,11 @@
 # Псина лаунчер
 
 <p align="center">
-  <a href="https://github.com/pyBIrtat/PsinaLauncher/releases/latest/download/psina-installer.bat"><b>⬇ СКАЧАТЬ ЛАУНЧЕР</b></a><br>
-  <sub>Один файл → запусти → лаунчер установится и появится ярлык на рабочем столе.</sub>
+  <a href="https://github.com/pyBIrtat/PsinaLauncher/releases/latest/download/psina-installer.bat"><b>⬇ СКАЧАТЬ ЛАУНЧЕР (ПК)</b></a>
+  &nbsp;&nbsp;·&nbsp;&nbsp;
+  <a href="https://github.com/pyBIrtat/PsinaLauncher/releases/latest/download/psina-mobile.apk"><b>⬇ СКАЧАТЬ НА ТЕЛЕФОН (APK)</b></a><br>
+  <sub><b>ПК:</b> один файл → запусти → лаунчер установится и появится ярлык на рабочем столе.</sub><br>
+  <sub><b>Телефон:</b> Android 8+ (APK). Нужен движок Java-Minecraft — Zalith Launcher, Amethyst или Mojo.</sub>
 </p>
 
 ---
@@ -60,3 +63,22 @@
 1. Положи jar в `clients/<версия>/`, лого `<id>.png` туда же.
 2. Добавь запись в `launcher.json` (id/name/mc/jar/requires/extra).
 3. Прогони `GenOnline` → закоммить оба манифеста → добавь jar в Release.
+
+## Дизайн
+
+Макеты ПК- и мобильной версии лежат в [`design/`](design):
+
+- `launcher-pc.html` — интерфейс ПК-лаунчера, `pc-clients.png` / `pc-mods.png` / `pc-sites.png` — скриншоты собранного лаунчера;
+- `mobile-v1.html`, `mobile-v2.html` — макеты телефона (финальный — v2), `mobile-icon.png` — иконка приложения;
+- палитры и расхождения — в [design/README.md](design/README.md).
+
+## Мобильная версия (Android)
+
+Исходники — в [`android/`](android): Kotlin, свой APK, без Pojav. Готовый APK:
+[**psina-mobile.apk**](https://github.com/pyBIrtat/PsinaLauncher/releases/latest/download/psina-mobile.apk)
+(нужен движок Zalith / Amethyst / Mojo).
+
+Клиенты, помеченные «только ПК», завозятся на телефон через необязательный блок
+`android` в манифесте: вырезание Windows-нативов (`stripNatives`), сборка только
+нужных модов из zip портативки (`modsFromZip`), пропуск desktop-модов
+(`extraRemove`). ПК-лаунчер этот блок игнорирует.

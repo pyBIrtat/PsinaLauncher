@@ -61,6 +61,8 @@ jobs:
           mkdir -p out
           cp android/app/build/outputs/apk/release/app-release.apk \
              "out/psina-mobile-${{ github.run_number }}.apk"
+          # стабильное имя для кнопки «Скачать на телефон» в README
+          cp android/app/build/outputs/apk/release/app-release.apk out/psina-mobile.apk
           sha256sum out/*.apk
 
       - name: Залить в релиз v1
@@ -69,7 +71,7 @@ jobs:
         run: |
           gh release view v1 --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1 \
             || gh release create v1 --repo "$GITHUB_REPOSITORY" --title "Psina Launcher v1" --notes "Все ассеты лаунчера."
-          gh release upload v1 "out/psina-mobile-${{ github.run_number }}.apk" \
+          gh release upload v1 "out/psina-mobile-${{ github.run_number }}.apk" out/psina-mobile.apk \
             --repo "$GITHUB_REPOSITORY" --clobber
 
       - name: Артефакт CI
