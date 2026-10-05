@@ -48,18 +48,6 @@
       }
     },
     {
-      "id": "debuda14",
-      "name": "Debuda",
-      "mc": "1.21.4",
-      "jar": "clients/1.21.4/debuda14-1.21.4-d05522ac.jar",
-      "sha256": "d05522ac4c8d413a834d9b3f727f52efc58e0261937088f64678c5bb0672065e",
-      "extra": [],
-      "android": {
-        "status": "pc",
-        "notes": "Сборка неполная: нет классов MintFFIBatch/OfflineHandles и есть Windows-нативы. Не запускается и на ПК без донора."
-      }
-    },
-    {
       "id": "delta14",
       "name": "Delta",
       "mc": "1.21.4",
