@@ -51,6 +51,10 @@ object Prefs {
         get() = sp.getBoolean("haptic", true)
         set(v) = sp.edit().putBoolean("haptic", v).apply()
 
+    var engineFolderUri: String?
+        get() = sp.getString("engineFolderUri", null)
+        set(v) = sp.edit().putString("engineFolderUri", v).apply()
+
     var manifestUrl: String
         get() = sp.getString("manifestUrl", DEFAULT_MANIFEST) ?: DEFAULT_MANIFEST
         set(v) = sp.edit().putString("manifestUrl", v).apply()

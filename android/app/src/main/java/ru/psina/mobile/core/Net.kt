@@ -30,6 +30,26 @@ object Net {
 
     const val UA = "psina-mobile/1.0 (Android)"
 
+    /** Простой токен отмены — передаётся в download(), проверяется в цикле копирования. */
+    class CancelToken { @Volatile var cancelled = false }
+
+    class DownloadCancelledException : IOException("Загрузка отменена пользователем")
+
+    /** HEAD-запрос ради Content-Length — нужен ДО скачивания, для проверки места на телефоне. */
+    fun contentLength(url: String): Long? = try {
+        val req = Request.Builder().url(url).head().header("User-Agent", UA).build()
+        client.newCall(req).execute().use { r ->
+            if (r.isSuccessful) r.header("Content-Length")?.toLongOrNull() else null
+        }
+    } catch (e: Exception) {
+        Logx.i("HEAD $url -> ${e.message}")
+        null
+    }
+
+    /** Сумма размеров — неизвестные (null) считаются нулём, поэтому оценка не занижена по известным. */
+    fun estimateTotalMb(urls: List<String>): Long =
+        urls.sumOf { contentLength(it) ?: 0L } / (1024 * 1024)
+
     /** Возвращает (url, тело) первого успешного зеркала. */
     fun getText(mirrors: List<String>): Pair<String, String> {
         var last: Exception? = null
@@ -67,13 +87,14 @@ object Net {
     }
 
     /**
-     * Скачивание файла с прогрессом. Уже существующий файл нужного размера
-     * (и, если задан, совпадающего sha256) не перекачивается.
+     * Скачивание файла с прогрессом, докачкой (.part + Range) и отменой.
+     * Уже существующий файл с совпадающим sha256 не перекачивается.
      */
     fun download(
         url: String,
         to: File,
         sha256: String? = null,
+        cancel: CancelToken? = null,
         onProgress: ((Long, Long) -> Unit)? = null
     ): File {
         to.parentFile?.mkdirs()
@@ -84,16 +105,23 @@ object Net {
         }
 
         val part = File(to.parentFile, to.name + ".part")
-        val req = Request.Builder().url(url).header("User-Agent", UA).build()
-        dlClient.newCall(req).execute().use { r ->
-            if (!r.isSuccessful) throw IOException("HTTP ${r.code} для $url")
-            val total = r.body?.contentLength() ?: -1L
-            part.outputStream().use { out ->
+        // ДОКАЧКА: если частичный файл уже есть — просим сервер отдать «хвост» через Range.
+        val resumeFrom = if (part.exists()) part.length() else 0L
+        val reqBuilder = Request.Builder().url(url).header("User-Agent", UA)
+        if (resumeFrom > 0) reqBuilder.header("Range", "bytes=$resumeFrom-")
+        dlClient.newCall(reqBuilder.build()).execute().use { r ->
+            if (!r.isSuccessful && r.code != 206) throw IOException("HTTP ${r.code} для $url")
+            val resumed = r.code == 206
+            val append = resumed && resumeFrom > 0
+            if (!append && part.exists()) part.delete()
+            val total = (r.body?.contentLength() ?: -1L).let { if (append && it > 0) it + resumeFrom else it }
+            java.io.FileOutputStream(part, append).use { out ->
                 r.body!!.byteStream().use { input ->
                     val buf = ByteArray(1 shl 16)
-                    var done = 0L
+                    var done = if (append) resumeFrom else 0L
                     var n: Int
                     while (input.read(buf).also { n = it } > 0) {
+                        if (cancel?.cancelled == true) throw DownloadCancelledException()
                         out.write(buf, 0, n)
                         done += n
                         onProgress?.invoke(done, total)
@@ -105,7 +133,7 @@ object Net {
         if (sha256 != null) {
             val got = Sha256.of(part)
             if (!got.equals(sha256, ignoreCase = true)) {
-                part.delete()
+                part.delete() // повреждённый файл НЕ остаётся на диске
                 throw IOException("sha256 не совпал для ${to.name}: ожидался $sha256, получен $got")
             }
         }

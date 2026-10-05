@@ -51,6 +51,7 @@ object Engine {
      * Движки читают строку запуска из разных extras, поэтому кладём сразу
      * несколько ключей — лишние они игнорируют.
      */
+    @Deprecated("Возвращает только «intent ушёл», не «игра запущена». Используй requestLaunch().")
     fun launch(
         ctx: Context,
         engine: Known,
@@ -59,29 +60,45 @@ object Engine {
         ramGb: Int,
         extraJvmArgs: List<String> = emptyList(),
         mainClass: String? = null
-    ): Boolean {
+    ): Boolean = requestLaunch(ctx, engine, mc, nickname, ramGb, extraJvmArgs, mainClass) is LaunchOutcome.RequestSent
+
+    /** Честный результат запроса на запуск — «Started» нет и быть не может. */
+    sealed class LaunchOutcome {
+        data class RequestSent(val engine: Known) : LaunchOutcome()
+        object NoEngineInstalled : LaunchOutcome()
+        data class Rejected(val engine: Known, val reason: String) : LaunchOutcome()
+    }
+
+    /**
+     * Замена launch(): делает то же самое (общий launch-intent пакета + набор
+     * extras «на всякий случай» — НИ ОДИН не задокументирован официально ни
+     * у одного из 4 движков, это best-effort, не контракт), но возвращает
+     * результат, который нельзя спутать с «игра запущена».
+     */
+    fun requestLaunch(
+        ctx: Context,
+        engine: Known,
+        mc: String,
+        nickname: String,
+        ramGb: Int,
+        extraJvmArgs: List<String> = emptyList(),
+        mainClass: String? = null
+    ): LaunchOutcome {
         val instance = Paths.instanceDir(mc)
         val args = buildArgs(mc, nickname, ramGb, extraJvmArgs, mainClass)
-        Logx.i("запуск ${engine.pkg} для $mc: ${args.take(200)}")
-
-        val intent = try {
+        Logx.i("запрос на запуск ${engine.pkg} для $mc (best-effort, без подтверждения)")
+        val base = try {
             engine.launchActivity?.let { act ->
                 Intent(Intent.ACTION_MAIN).apply { setClassName(engine.pkg, act) }
             } ?: ctx.packageManager.getLaunchIntentForPackage(engine.pkg)
         } catch (e: Exception) {
-            Logx.i("явная активность ${engine.pkg} недоступна: ${e.message}")
+            Logx.e("у ${engine.pkg} нет launch-intent", e)
             null
-        }
-
-        val base = intent ?: try { ctx.packageManager.getLaunchIntentForPackage(engine.pkg) } catch (e: Exception) { null }
-        if (base == null) {
-            Logx.e("у ${engine.pkg} нет launch-intent", null)
-            return false
-        }
+        } ?: return LaunchOutcome.Rejected(engine, "нет launch-intent пакета")
 
         return try {
             base.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            // строка аргументов — под самые ходовые ключи движков
+            // строка аргументов — под самые ходовые ключи движков (best-effort)
             base.putExtra("javaArgs", args)
             base.putExtra("psina_args", args)
             base.putExtra("jvmArgs", args)
@@ -91,10 +108,10 @@ object Engine {
             base.putExtra("psina_nickname", nickname)
             base.putExtra("psina_mc", mc)
             ctx.startActivity(base)
-            true
+            LaunchOutcome.RequestSent(engine)
         } catch (e: Exception) {
             Logx.e("не удалось запустить ${engine.pkg}", e)
-            false
+            LaunchOutcome.Rejected(engine, e.message ?: "неизвестная ошибка")
         }
     }
 

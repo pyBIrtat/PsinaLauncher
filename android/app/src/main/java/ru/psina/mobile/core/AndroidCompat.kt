@@ -51,7 +51,19 @@ data class AndroidSpec(
     val jvmArgs: List<String> = emptyList(),
     /** Свой главный класс вместо KnotClient (нужен редким сборкам). */
     val mainClass: String? = null,
-    val notes: String = ""
+    val notes: String = "",
+
+    // --- требования к телефону (проверяются ДО скачивания) ---
+    /** Минимальный Build.VERSION.SDK_INT; 0 = не проверять. */
+    val minAndroidApi: Int = 0,
+    /** Обязательная архитектура, сейчас поддерживается только "arm64-v8a"; пусто = не проверять. */
+    val architecture: String = "",
+    /** Рекомендуемый объём ОЗУ телефона в МБ — мягкая проверка (предупреждение). */
+    val requiredMemoryMb: Long = 0,
+    /** Если задано — клиент проверен только с этим движком (package name из Engine.known). */
+    val requiredEngine: String? = null,
+    /** Оценка суммарного размера установки в МБ — для проверки свободного места до скачивания. */
+    val estimatedSizeMb: Long = 0
 ) {
     val isPlayable: Boolean get() = status != Support.PC_ONLY
 }

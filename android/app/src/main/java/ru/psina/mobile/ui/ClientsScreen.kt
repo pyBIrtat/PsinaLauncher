@@ -17,6 +17,8 @@ import ru.psina.mobile.core.Installer
 import ru.psina.mobile.core.Logx
 import ru.psina.mobile.core.ManifestRepo
 import ru.psina.mobile.core.Paths
+import ru.psina.mobile.core.PlayPipeline
+import ru.psina.mobile.core.PlayState
 import ru.psina.mobile.core.Prefs
 import ru.psina.mobile.core.Store
 import ru.psina.mobile.export.InstanceExporter
@@ -328,33 +330,60 @@ class ClientsScreen(act: Activity) : Screen(act) {
     }
 
     private fun play(c: ManifestRepo.Client) {
-        val engines = Engine.installed(act)
-        if (engines.isEmpty()) {
-            Ui.confirm(
-                act, "Движок не найден",
-                "На телефоне нет движка Java-Minecraft (Zalith / Amethyst / Mojo). " +
-                    "Экспортировать инстанс архивом, чтобы закинуть его вручную?"
-            ) { exportInstance(c) }
-            return
-        }
-        val spec = AndroidCompat.specOf(c)
-        val names = engines.map { it.title }.toTypedArray()
-        android.app.AlertDialog.Builder(act, R.style.Theme_Psina_Dialog)
-            .setTitle("Запустить через")
-            .setItems(names) { _, i ->
-                val ok = Engine.launch(
-                    act, engines[i], c.mc, Prefs.nickname, Prefs.ramGb,
-                    extraJvmArgs = spec.jvmArgs, mainClass = spec.mainClass
-                )
-                if (!ok) {
-                    Ui.info(
-                        act, "Не удалось запустить",
-                        "Движок не принял запуск. Экспортируй инстанс архивом " +
-                            "и закинь моды вручную."
-                    )
+        val pipeline = PlayPipeline(act)
+        val dlg = android.app.Dialog(act, R.style.Theme_Psina_Dialog)
+        val box = Ui.column(act)
+        val stage = Ui.text(act, "Подготовка…", 15f)
+        val detail = Ui.sub(act, "")
+        val bar = Ui.progress(act)
+        val cancelBtn = Ui.button(act, "Отмена").apply { setOnClickListener { pipeline.cancelDownload() } }
+        box.addView(Ui.title(act, "Играем: ${c.name}"))
+        box.addView(stage)
+        box.addView(detail)
+        box.addView(bar)
+        box.addView(cancelBtn)
+        dlg.setContentView(Ui.scroll(act, box))
+        dlg.setCancelable(false)
+        dlg.show()
+
+        pipeline.onState = { state ->
+            act.runOnUiThread {
+                when (state) {
+                    PlayState.LoadingManifest -> { stage.text = "Загружаем манифест"; bar.progress = 0 }
+                    PlayState.CheckingPhoneStorage -> stage.text = "Проверяем место на телефоне"
+                    PlayState.CheckingAndroidCompatibility -> stage.text = "Проверяем совместимость телефона"
+                    PlayState.CheckingFiles -> stage.text = "Проверяем файлы профиля"
+                    is PlayState.Downloading -> {
+                        stage.text = "Скачиваем"
+                        detail.text = state.file
+                        bar.progress = state.percent
+                    }
+                    PlayState.Verifying -> stage.text = "Проверяем целостность (sha256)"
+                    PlayState.Installing -> stage.text = "Устанавливаем"
+                    PlayState.PreparingMobileProfile -> stage.text = "Готовим мобильный профиль"
+                    PlayState.PreparingRuntime -> stage.text = "Ищем движок Java-Minecraft"
+                    is PlayState.LaunchingMinecraft -> stage.text = "Передаём профиль в ${state.engineTitle}"
+                    is PlayState.LaunchRequestSent -> {
+                        dlg.dismiss()
+                        Ui.info(
+                            act, "Профиль передан в ${state.engineTitle}",
+                            "Файлы скачаны, проверены и готовы. Мы отправили запрос на запуск, но " +
+                                "${state.engineTitle} не даёт способа подтвердить, что Minecraft правда " +
+                                "открылся — это ограничение самого движка, а не PsinaLauncher. " +
+                                "Открой ${state.engineTitle}, найди версию/профиль «${c.mc}» и запусти " +
+                                "её, если игра не появилась сама."
+                        )
+                    }
+                    PlayState.MinecraftExited -> dlg.dismiss()
+                    is PlayState.LaunchFailed -> {
+                        dlg.dismiss()
+                        Ui.info(act, state.error.title, "${state.error.reason}\n\n${state.error.whatToDo}")
+                    }
+                    else -> {}
                 }
             }
-            .show()
+        }
+        thread { pipeline.run(c.id, Prefs.nickname, Prefs.ramGb) }
     }
 
     private fun exportInstance(c: ManifestRepo.Client) {

@@ -120,7 +120,13 @@ object ManifestRepo {
             stripNatives = o.optBoolean("stripNatives", false),
             jvmArgs = strList(o, "jvmArgs"),
             mainClass = o.optString("mainClass").ifBlank { null },
-            notes = o.optString("notes")
+            notes = o.optString("notes"),
+            // требования к телефону — все необязательные, старые манифесты парсятся как раньше
+            minAndroidApi = o.optInt("minAndroidApi", 0),
+            architecture = o.optString("architecture"),
+            requiredMemoryMb = o.optLong("requiredMemoryMb", 0L),
+            requiredEngine = o.optString("requiredEngine").ifBlank { null },
+            estimatedSizeMb = o.optLong("estimatedSizeMb", 0L)
         )
     }
 
