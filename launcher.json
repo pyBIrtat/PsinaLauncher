@@ -416,8 +416,8 @@
       "id": "dimasik",
       "name": "Dimasik",
       "mc": "26.2",
-      "jar": "clients/26.2/dimasik-26.2-5be2cba9.jar",
-      "sha256": "5be2cba99080430b4b81dc5a5aca4f0a916ef24bca7a7528ed066cc85fa79871",
+      "jar": "clients/26.2/dimasik-26.2-clean.jar",
+      "sha256": "993ca53c8ca2dcfb4d9fe60422234549df909e6f90c0b5136e5f1e70a2d0a492",
       "extra": [
         {
           "name": "dimasik-luaj.jar",
