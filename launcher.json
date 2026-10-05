@@ -155,18 +155,6 @@
       }
     },
     {
-      "id": "dimasik14",
-      "name": "Dimasik",
-      "mc": "1.21.4",
-      "jar": "",
-      "portable": "dimasik14",
-      "android": {
-        "status": "pc",
-        "notes": "Портативка с мёржед-jar (Main-Class Launch) и своим Windows-JRE — без него на телефоне не собрать."
-      },
-      "notes": "Битый билд автора: краш генерации мира (ClassCastException в генераторе чанков). Мир не создаётся. Фикс usercache в лаунчере (v40+) чинит только запуск."
-    },
-    {
       "id": "rockstar14",
       "name": "Rockstar",
       "mc": "1.21.4",
