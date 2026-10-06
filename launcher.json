@@ -450,20 +450,6 @@
         "status": "pc",
         "notes": "GUI внутри VMProtect-упакованного ClientGUI.dll (BlackBone-инжектор) — только Windows. Нужен движок с Java 25."
       }
-    },
-    {
-      "id": "exclusive",
-      "name": "Exclusive",
-      "mc": "1.21.11",
-      "jar": "clients/1.21.11/exclusive-1.21.11-f1797d30.jar",
-      "sha256": "f1797d304a5fd0a843bdb3eb72722a554d99593877d07edc1d74e36b6243942d",
-      "extra": [],
-      "android": {
-        "status": "experimental",
-        "stripNatives": true,
-        "estimatedSizeMb": 300,
-        "notes": "Java 21. Клиент тяжёлый (~300 МБ: меню-видео, звуки, датасеты). Windows-нативы (OptMedia, discord-rpc) вырезаем при установке."
-      }
     }
   ]
 }
