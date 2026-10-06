@@ -264,12 +264,15 @@
       "id": "nursultan",
       "name": "Nursultan",
       "mc": "1.21.11",
-      "jar": "",
+      "jar": "clients/1.21.11/nursultan-1.21.11-6a40f300.jar",
       "portable": "nursultan",
       "android": {
-        "status": "pc",
-        "notes": "Своя точка входа Main со своим Fabric-бустстрапом и pinned-библиотеками — на телефоне не запускается."
-      }
+        "status": "experimental",
+        "mainClass": "Main",
+        "estimatedSizeMb": 800,
+        "notes": "β-порт на телефон: их лоадер Main поверх ванили 1.21.11 (нативы лаунчера). Эксперимент — может не запуститься, тогда напиши логи владельцу."
+      },
+      "sha256": "6a40f30033ad8262eeb6d66890ad6186c6cd9160d1bea82cafbdea2bb1e75d3e"
     },
     {
       "id": "rockstar",
