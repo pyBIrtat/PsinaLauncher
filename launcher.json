@@ -431,6 +431,18 @@
       }
     },
     {
+      "id": "mhub",
+      "name": "MHUB",
+      "mc": "1.21.11",
+      "jar": "clients/1.21.11/MhubCrack.jar",
+      "sha256": "fd8fb4f58150bc4d07403da02f728be0c64075c5056043d729b0b60122ed620f",
+      "extra": [],
+      "android": {
+        "status": "pc_only",
+        "notes": "Windows x64 + Java 21: лоадер тянет свои .dll и ждёт готовности окна игры — на Android-рантайме не заведётся."
+      }
+    },
+    {
       "id": "system",
       "name": "System Ready1",
       "mc": "1.21.11",
