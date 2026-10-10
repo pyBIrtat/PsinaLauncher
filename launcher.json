@@ -154,7 +154,7 @@
         ]
       }
     },
-        {
+    {
       "id": "obrti",
       "name": "Rockstar",
       "mc": "1.21.4",
@@ -446,7 +446,8 @@
         "status": "pc",
         "notes": "GUI внутри VMProtect-упакованного ClientGUI.dll (BlackBone-инжектор) — работает только на Windows."
       }
-    },    {
+    },
+    {
       "id": "draine",
       "name": "Draine Client",
       "mc": "1.21.11",
@@ -470,7 +471,6 @@
         "notes": "Собран из восстановленных исходников (38.1.5-recovered). IRC/косметика deluxegaymarket.fun, FunPay-модуль — на телефоне работает, но без ПК-нативов."
       }
     },
-
     {
       "id": "system26",
       "name": "System 26.2",
@@ -493,6 +493,19 @@
         "status": "experimental",
         "stripNatives": true,
         "notes": "Собран из исходников EvolutionDLC 2026.10.1. Обфусцирован, но разбор показал только лицензионный HWID-check (MachineGuid) — стильер нет. Whisper/yt-dlp — ПК-фичи, на телефоне отключатся."
+      }
+    },
+    {
+      "id": "raptor",
+      "name": "RAPTOR",
+      "mc": "1.21.11",
+      "jar": "clients/1.21.11/raptor/raptor-1.21.11-9a973f31.jar",
+      "sha256": "9a973f31f0d9fa6d87cc657452ff9c3edacb466bac7fc5412eeaa5476b99fbd1",
+      "extra": [],
+      "android": {
+        "status": "full",
+        "stripNatives": true,
+        "notes": "native-free build, safe on Android"
       }
     }
   ]
