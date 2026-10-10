@@ -154,30 +154,23 @@
         ]
       }
     },
-    {
-      "id": "rockstar14",
+        {
+      "id": "obrti",
       "name": "Rockstar",
       "mc": "1.21.4",
-      "jar": "clients/1.21.4/rockstar14-1.21.4-254c4702.jar",
-      "sha256": "254c470229d2b348d9d1300e6ddb3a9fdfaa38d8dc9279dc3f0b13f106525c28",
+      "jar": "clients/1.21.4/obrti/obrti-1.21.4-818daf02.jar",
+      "sha256": "818daf0231321384811cc751a34204a6885eecddf165969800aa836f30e1fae6",
       "extra": [
         {
-          "name": "rockstar-kotlin-stdlib.jar",
-          "url": "clients/1.21.4/rockstar14-1.21.4-kotlin-stdlib.jar"
-        },
-        {
-          "name": "rockstar-okhttp.jar",
-          "url": "clients/1.21.4/rockstar14-1.21.4-okhttp.jar"
-        },
-        {
-          "name": "rockstar-okio.jar",
-          "url": "clients/1.21.4/rockstar14-1.21.4-okio.jar"
+          "name": "fabric-api-0.119.4+1.21.4.jar",
+          "url": "clients/1.21.4/obrti/fabric-api-0.119.4+1.21.4.jar",
+          "sha256": "d183bacb845167f09264c2f90322b7ecffe8826debda6f60e597889264bef4af"
         }
       ],
       "android": {
         "status": "experimental",
         "stripNatives": true,
-        "notes": "MediaPlayerInfo.dll и Swing вырезаем при установке; медиа-фичи отключатся."
+        "notes": "MediaPlayerInfo.dll и Swing вырезаем при установке; медиа-фичи отключатся. Скачивает Python 3.11 с python.org — на телефоне фича отключится; RockNet-чат без сервера не подключить."
       }
     },
     {
