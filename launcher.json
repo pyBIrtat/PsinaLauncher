@@ -446,7 +446,31 @@
         "status": "pc",
         "notes": "GUI внутри VMProtect-упакованного ClientGUI.dll (BlackBone-инжектор) — работает только на Windows."
       }
+    },    {
+      "id": "draine",
+      "name": "Draine Client",
+      "mc": "1.21.11",
+      "jar": "clients/1.21.11/draine/draine-1.21.11-fd080dc8.jar",
+      "sha256": "fd080dc8247fc74a1e81d754059f250dbce2e805e22538eee3926dfd0ba91b87",
+      "android": {
+        "status": "experimental",
+        "stripNatives": true,
+        "notes": "Собран из декомпила (fantavisuals 1.0-free). AI-модуль (OpenAI) требует API-ключ — на телефоне отключится."
+      }
     },
+    {
+      "id": "deluxe",
+      "name": "DELUXE",
+      "mc": "1.21.11",
+      "jar": "clients/1.21.11/deluxe/deluxe-1.21.11-e91d76e9.jar",
+      "sha256": "e91d76e9d0856f8413e0e08c8f05bda68a767038e12d8fab888f3391678a609e",
+      "android": {
+        "status": "experimental",
+        "stripNatives": true,
+        "notes": "Собран из восстановленных исходников (38.1.5-recovered). IRC/косметика deluxegaymarket.fun, FunPay-модуль — на телефоне работает, но без ПК-нативов."
+      }
+    },
+
     {
       "id": "system26",
       "name": "System 26.2",
@@ -457,6 +481,18 @@
       "android": {
         "status": "pc",
         "notes": "GUI внутри VMProtect-упакованного ClientGUI.dll (BlackBone-инжектор) — только Windows. Нужен движок с Java 25."
+      }
+    },
+    {
+      "id": "evovisuals",
+      "name": "EvolutionDLC",
+      "mc": "26.2",
+      "jar": "clients/26.2/evovisuals/evovisuals-26.2-fbdb7364.jar",
+      "sha256": "fbdb7364bbbb6eeb165d409ea9eb77101c0bd843ab62d249c55a1de939fb5d41",
+      "android": {
+        "status": "experimental",
+        "stripNatives": true,
+        "notes": "Собран из исходников EvolutionDLC 2026.10.1. Обфусцирован, но разбор показал только лицензионный HWID-check (MachineGuid) — стильер нет. Whisper/yt-dlp — ПК-фичи, на телефоне отключатся."
       }
     }
   ]
