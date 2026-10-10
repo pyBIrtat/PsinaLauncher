@@ -499,8 +499,8 @@
       "id": "raptor",
       "name": "RAPTOR",
       "mc": "1.21.11",
-      "jar": "clients/1.21.11/raptor/raptor-1.21.11-9a973f31.jar",
-      "sha256": "9a973f31f0d9fa6d87cc657452ff9c3edacb466bac7fc5412eeaa5476b99fbd1",
+      "jar": "clients/1.21.11/raptor/raptor-1.21.11-509a3dc1.jar",
+      "sha256": "509a3dc1978ad7402ab69b00ca490fccd859d72b2d1fb2cf5acbb0ca49b92380",
       "extra": [],
       "android": {
         "status": "full",
