@@ -450,7 +450,7 @@
       "id": "draine",
       "name": "Draine Client",
       "mc": "1.21.11",
-      "jar": "clients/1.21.11/draine/draine-1.21.11-fd080dc8.jar",
+      "jar": "clients/1.21.11/draine/draine-1.21.11-80285a9e.jar",
       "sha256": "80285a9e10f2a795438c6f6515277cf6bd620fccbf3b5f94381b2050a9b14965",
       "android": {
         "status": "experimental",
