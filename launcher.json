@@ -2,6 +2,7 @@
   "versions": [
     "1.21.4",
     "1.21.11",
+    "1.21.8",
     "26.2"
   ],
   "clients": [
@@ -493,6 +494,22 @@
         "status": "experimental",
         "stripNatives": true,
         "notes": "Собран из исходников EvolutionDLC 2026.10.1. Обфусцирован, но разбор показал только лицензионный HWID-check (MachineGuid) — стильер нет. Whisper/yt-dlp — ПК-фичи, на телефоне отключатся."
+      }
+    },
+    {
+      "id": "wild",
+      "name": "Wild",
+      "mc": "1.21.8",
+      "jar": "clients/1.21.8/wild/wild-1.21.8-c156bccf.jar",
+      "sha256": "c156bccf8a578b3dbded7cd748a7cf7ab1f60e5fd69fc012587ca9a1d54463bf",
+      "requires": [
+        "viafabricplus"
+      ],
+      "extra": [],
+      "android": {
+        "status": "experimental",
+        "stripNatives": true,
+        "notes": "discord-rpc.dll и MediaPlayerInfo.dll вырезаем при установке; RPC/медиа на телефоне отключатся. Baritone внутри как nested jar."
       }
     }
   ]
