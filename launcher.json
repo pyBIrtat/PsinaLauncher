@@ -26,13 +26,13 @@
       "id": "arbuz",
       "name": "Arbuz",
       "mc": "1.21.4",
-      "jar": "clients/1.21.4/arbuz-1.21.4-810929f4.jar",
-      "sha256": "810929f4f5bd944a837d2b464d6feeb269c63d920a9fc12219635c20bb91eab7",
+      "jar": "clients/1.21.4/arbuz/arbuzhack-1.21.4-d794c810.jar",
+      "sha256": "d794c81044a3e04c4b2c75d4ed65e536df50caeb5b309d14b85648ceb96b2d09",
       "extra": [],
       "android": {
         "status": "experimental",
         "stripNatives": true,
-        "notes": "CatBoost-детект без Android-нативов: эта фича отвалится, остальное работает."
+        "notes": "v1.0.5 полная сборка: внутри jcef(хромиум-браузер, 162 МБ), onnxruntime(95 МБ), catboost AI-модели — при установке Android вырезаем тяжёлые несовместимые части. Требуется fabric-api в mods."
       }
     },
     {
