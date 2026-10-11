@@ -494,19 +494,6 @@
         "stripNatives": true,
         "notes": "Собран из исходников EvolutionDLC 2026.10.1. Обфусцирован, но разбор показал только лицензионный HWID-check (MachineGuid) — стильер нет. Whisper/yt-dlp — ПК-фичи, на телефоне отключатся."
       }
-    },
-    {
-      "id": "raptor",
-      "name": "RAPTOR",
-      "mc": "1.21.11",
-      "jar": "clients/1.21.11/raptor/raptor-1.21.11-509a3dc1.jar",
-      "sha256": "509a3dc1978ad7402ab69b00ca490fccd859d72b2d1fb2cf5acbb0ca49b92380",
-      "extra": [],
-      "android": {
-        "status": "full",
-        "stripNatives": true,
-        "notes": "native-free build, safe on Android"
-      }
     }
   ]
 }
