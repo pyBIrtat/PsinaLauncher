@@ -26,8 +26,8 @@
       "id": "arbuz",
       "name": "Arbuz",
       "mc": "1.21.4",
-      "jar": "clients/1.21.4/arbuz/arbuzhack-1.21.4-d794c810.jar",
-      "sha256": "d794c81044a3e04c4b2c75d4ed65e536df50caeb5b309d14b85648ceb96b2d09",
+      "jar": "clients/1.21.4/arbuz-marat.jar",
+      "sha256": "f7801db392ea77091765f93c1cff38ca58a0e127520a20e5e0d2a202c3299978",
       "extra": [],
       "android": {
         "status": "experimental",
