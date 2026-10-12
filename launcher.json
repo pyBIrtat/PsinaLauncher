@@ -473,6 +473,18 @@
       }
     },
     {
+      "id": "evovisuals",
+      "name": "EvolutionDLC",
+      "mc": "26.2",
+      "jar": "clients/26.2/evovisuals/evovisuals-26.2-fbdb7364.jar",
+      "sha256": "fbdb7364bbbb6eeb165d409ea9eb77101c0bd843ab62d249c55a1de939fb5d41",
+      "android": {
+        "status": "experimental",
+        "stripNatives": true,
+        "notes": "Собран из исходников EvolutionDLC 2026.10.1. Обфусцирован, но разбор показал только лицензионный HWID-check (MachineGuid) — стильер нет. Whisper/yt-dlp — ПК-фичи, на телефоне отключатся."
+      }
+    },
+    {
       "id": "wild",
       "name": "Wild",
       "mc": "1.21.8",
@@ -486,6 +498,19 @@
         "status": "experimental",
         "stripNatives": true,
         "notes": "discord-rpc.dll и MediaPlayerInfo.dll вырезаем при установке; RPC/медиа на телефоне отключатся. Baritone внутри как nested jar."
+      }
+    },
+    {
+      "id": "loxdlc",
+      "name": "LOX DLC",
+      "mc": "1.21.11",
+      "jar": "clients/1.21.11/loxdlc/loxdlc-1.21.11-392ee689.jar",
+      "sha256": "392ee6897c61de583f6c03f3fb4d090f4644197599760eabad7899533fb82541",
+      "extra": [],
+      "android": {
+        "status": "experimental",
+        "stripNatives": true,
+        "notes": "Оригинальная Drai­ne-client база в шкуре LOX DLC (пакет ru.psina.lox). AI-модуль требует API-ключ — на телефоне отключится."
       }
     }
   ]
